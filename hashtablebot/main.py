@@ -215,6 +215,7 @@ class Bot(commands.Bot):
 
 
 if __name__ == "__main__":
+    # Get token and initial channels and log level from environment variables
     twitch_token = os.environ.get("TWITCH_TOKEN")
     comma_separated_initial_channels = os.environ.get(
         "COMMA_SEPARATED_INITIAL_CHANNELS"
