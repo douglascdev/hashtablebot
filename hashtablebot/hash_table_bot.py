@@ -93,7 +93,7 @@ class HashTableBot(commands.Bot):
             else:
                 await ctx.reply(f"who am I suppose to bonk elisHuh ")
 
-    @commands.command()
+    @commands.command(aliases=["gamble"])
     async def gamba(self, ctx: commands.Context, amount: str):
         try:
             author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
@@ -190,7 +190,7 @@ class HashTableBot(commands.Bot):
             f"{ctx.message.author.name} gave {amount} elisCoin to {target_user.name} POGGERS"
         )
 
-    @commands.command()
+    @commands.command(aliases=["commands"])
     async def help(self, ctx: commands.Context):
         try:
             commands_name_list = [
