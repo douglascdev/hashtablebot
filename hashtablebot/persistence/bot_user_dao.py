@@ -2,9 +2,9 @@ from typing import Iterable
 
 from sqlalchemy import select
 
-from hash_bot.entity.bot_user import BotUser
-from hash_bot.persistence.dao import Dao
-from hash_bot.persistence.session import Session
+from hashtablebot.entity.bot_user import BotUser
+from hashtablebot.persistence.dao import Dao
+from hashtablebot.persistence.session import Session
 
 
 class BotUserDao(Dao[BotUser]):

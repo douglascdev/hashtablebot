@@ -8,17 +8,17 @@ from twitchio.ext import commands
 
 from twitchio.ext.commands import MissingRequiredArgument, BadArgument
 
-from hash_bot.banking.bank import Bank
-from hash_bot.banking.commands import Deposit, Withdrawal, Batch
-from hash_bot.bot_exceptions import (
+from hashtablebot.banking.bank import Bank
+from hashtablebot.banking.commands import Deposit, Withdrawal, Batch
+from hashtablebot.bot_exceptions import (
     NotEnoughCoinError,
     InvalidPointAmountError,
     ExceptionWithChatMessage,
 )
-from hash_bot.entity.bot_user import BotUser
-from hash_bot.memory_entity.no_prefix_command import DefaultNoPrefix
-from hash_bot.memory_entity.point_amount import PointAmountConverter
-from hash_bot.persistence.bot_user_dao import BotUserDao
+from hashtablebot.entity.bot_user import BotUser
+from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
+from hashtablebot.memory_entity.point_amount import PointAmountConverter
+from hashtablebot.persistence.bot_user_dao import BotUserDao
 
 
 class Bot(commands.Bot):

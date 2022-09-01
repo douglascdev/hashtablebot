@@ -3,7 +3,7 @@ import dataclasses
 from sqlalchemy import Column, Integer, Table
 from sqlalchemy.orm import registry
 
-from hash_bot.bot_exceptions import NotEnoughCoinError
+from hashtablebot.bot_exceptions import NotEnoughCoinError
 
 mapper_registry = registry()
 

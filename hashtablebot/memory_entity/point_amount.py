@@ -1,5 +1,5 @@
-from hash_bot.bot_exceptions import InvalidPointAmountError
-from hash_bot.entity.bot_user import BotUser
+from hashtablebot.bot_exceptions import InvalidPointAmountError
+from hashtablebot.entity.bot_user import BotUser
 
 
 class PointAmountConverter:

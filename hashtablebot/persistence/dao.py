@@ -3,7 +3,7 @@ from typing import TypeVar, Generic, Iterable
 
 from sqlalchemy import select
 
-from hash_bot.persistence.session import Session
+from hashtablebot.persistence.session import Session
 
 T = TypeVar("T")
 

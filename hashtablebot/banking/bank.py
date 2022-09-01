@@ -1,11 +1,11 @@
 from sqlalchemy.exc import NoResultFound
 from twitchio import Chatter
 
-from hash_bot.banking.commands import Deposit
-from hash_bot.banking.transaction import Transaction
-from hash_bot.entity.bot_user import BotUser
-from hash_bot.persistence.bot_user_dao import BotUserDao
-from hash_bot.user_checks import is_valid_chatter
+from hashtablebot.banking.commands import Deposit
+from hashtablebot.banking.transaction import Transaction
+from hashtablebot.entity.bot_user import BotUser
+from hashtablebot.persistence.bot_user_dao import BotUserDao
+from hashtablebot.user_checks import is_valid_chatter
 
 
 class Bank:

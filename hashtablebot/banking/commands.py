@@ -1,8 +1,8 @@
 import logging
 from dataclasses import dataclass, field
 
-from hash_bot.banking.transaction import Transaction
-from hash_bot.entity.bot_user import BotUser
+from hashtablebot.banking.transaction import Transaction
+from hashtablebot.entity.bot_user import BotUser
 
 
 @dataclass
