@@ -1,5 +1,6 @@
 import logging
 import random
+import sys
 
 from sqlalchemy.exc import NoResultFound
 from twitchio import User, Message, Channel
@@ -18,6 +19,7 @@ from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
 from hashtablebot.memory_entity.point_amount import PointAmountConverter
 from hashtablebot.persistence.bot_user_dao import BotUserDao
+from hashtablebot.user_checks import is_bot_admin_or_mod
 
 
 class HashTableBot(commands.Bot):
@@ -200,6 +202,16 @@ class HashTableBot(commands.Bot):
                 f"'{' '.join(cmd.names)}'" for cmd in self._no_prefix_commands
             ]
             await ctx.reply(f" Commands: {', '.join(commands_name_list)}.")
+        except Exception as e:
+            logging.exception(e)
+            await ctx.reply("Something went wrong peepoSad")
+
+    @commands.command()
+    async def shutdown(self, ctx: commands.Context):
+        try:
+            if is_bot_admin_or_mod(ctx.author):
+                await ctx.reply("elisLost bye")
+                sys.exit(0)
         except Exception as e:
             logging.exception(e)
             await ctx.reply("Something went wrong peepoSad")
