@@ -181,7 +181,7 @@ class HashTableBot(commands.Bot):
             Batch(
                 [
                     Withdrawal(bot_user=author_bot_user, amount=amount),
-                    Deposit(bot_user=author_bot_user, amount=amount),
+                    Deposit(bot_user=target_bot_user, amount=amount),
                 ]
             )
         )
