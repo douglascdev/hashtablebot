@@ -45,6 +45,8 @@ class BotUserDao(Dao[BotUser]):
     @staticmethod
     def update(*objs: BotUser):
         with Session.begin() as db_session:
+            not_added_objs = [obj for obj in objs if obj not in db_session]
+            db_session.add_all(not_added_objs)
             db_session.commit()
 
     @staticmethod
