@@ -9,7 +9,7 @@ if __name__ == "__main__":
     comma_separated_initial_channels = os.environ.get(
         "COMMA_SEPARATED_INITIAL_CHANNELS"
     )
-    log_level = os.environ.get("LOG_LEVEL")
+    log_level = os.environ.get("LOG_LEVEL", "INFO")
     logging.basicConfig(level=log_level)
 
     bot = HashTableBot(twitch_token, comma_separated_initial_channels.split(","))
