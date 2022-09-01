@@ -26,8 +26,8 @@ class HashTableBot(commands.Bot):
         self._no_prefix_commands = (
             DefaultNoPrefix(("Robert",), "NekoPray Robert"),
             DefaultNoPrefix(("NekoPray", "Robert"), "NekoPray Robert"),
-            DefaultNoPrefix(("elisElis",), "elisElis"),
             DefaultNoPrefix(("elisElis", "elisTime"), "elisElis elisTime"),
+            DefaultNoPrefix(("elisElis",), "elisElis"),
         )
         self._chatting_message_reward = 1
         self._join_channel_message = ""
