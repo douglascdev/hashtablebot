@@ -23,6 +23,9 @@ from hashtablebot.user_checks import is_bot_admin_or_mod
 
 
 class HashTableBot(commands.Bot):
+    DEFAULT_COOLDOWN_RATE = 1
+    DEFAULT_COOLDOWN_TIME = 30
+
     def __init__(self, token, initial_channels):
         super().__init__(token=token, prefix="$", initial_channels=initial_channels)
         self._no_prefix_commands = (
@@ -83,6 +86,7 @@ class HashTableBot(commands.Bot):
                 logging.exception(e)
                 await message.channel.send(f"Not a valid argument elisStand")
 
+    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command()
     async def bonk(self, ctx: commands.Context):
         if ctx.message.content:
@@ -95,6 +99,7 @@ class HashTableBot(commands.Bot):
             else:
                 await ctx.reply(f"who am I suppose to bonk elisHuh ")
 
+    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command(aliases=["gamble"])
     async def gamba(self, ctx: commands.Context, amount: str):
         try:
@@ -133,6 +138,7 @@ class HashTableBot(commands.Bot):
         BotUserDao.update(author)
         await ctx.send(message)
 
+    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command(aliases=["eliscoin", "points"])
     async def eliscoins(self, ctx: commands.Context):
         try:
@@ -151,6 +157,7 @@ class HashTableBot(commands.Bot):
 
         await ctx.reply(f"You have {eliscoins} elisCoin ! {reaction}")
 
+    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command()
     async def give(self, ctx: commands.Context, target_user: User, amount: str):
         author_id = ctx.message.author.id
@@ -192,6 +199,7 @@ class HashTableBot(commands.Bot):
             f"{ctx.message.author.name} gave {amount} elisCoin to {target_user.name} POGGERS"
         )
 
+    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command(aliases=["commands"])
     async def help(self, ctx: commands.Context):
         try:
