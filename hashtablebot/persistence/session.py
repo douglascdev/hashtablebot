@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 from hashtablebot.entity.bot_user import BotUser
 
-engine = create_engine("sqlite:////home/douglas/hashtablebot.db", future=True)
+engine = create_engine("sqlite:///hashtablebot.db", future=True)
 
 # TODO: search: is it ok to use expire_on_commit like this?
 Session = sessionmaker(engine, future=True, expire_on_commit=False)
