@@ -134,9 +134,12 @@ class HashTableBot(commands.Bot):
 
     @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command(aliases=["eliscoin", "points"])
-    async def eliscoins(self, ctx: commands.Context):
+    async def eliscoins(self, ctx: commands.Context, target: User = None):
+        if not target:
+            target = ctx.message.author
+
         try:
-            author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
+            author: BotUser = BotUserDao.get_by_id(target.id)
         except NoResultFound:
             eliscoins = 0
         else:
@@ -149,7 +152,7 @@ class HashTableBot(commands.Bot):
         else:
             reaction = " PagChomp "
 
-        await ctx.reply(f"You have {eliscoins} elisCoin ! {reaction}")
+        await ctx.reply(f"User {target.name} owns {eliscoins} elisCoin ! {reaction}")
 
     @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command()
