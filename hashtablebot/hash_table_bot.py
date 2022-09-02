@@ -88,16 +88,10 @@ class HashTableBot(commands.Bot):
 
     @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command()
-    async def bonk(self, ctx: commands.Context):
-        if ctx.message.content:
-            pos = ctx.message.content.find(" ")
-
-            if pos >= 0:
-                await ctx.send(
-                    f"koroneBonk koroneBonk koroneBonk {ctx.message.content[pos:]}"
-                )
-            else:
-                await ctx.reply(f"who am I suppose to bonk elisHuh ")
+    async def bonk(self, ctx: commands.Context, target: User):
+        await ctx.send(
+            f"koroneBonk koroneBonk koroneBonk {target.name}"
+        )
 
     @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
     @commands.command(aliases=["gamble"])
