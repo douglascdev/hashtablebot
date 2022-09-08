@@ -1,8 +1,8 @@
 Hash Table Bot
 ==============
 
-User install
--------
+Installation
+------------
 
 1. `Install python3.10 <https://www.python.org/downloads/>`_
 2. Clone the project's repository:
@@ -26,8 +26,8 @@ For a dev setup, you should instead install using the editable flag, to reflect 
     pip install -e .
 
 
-Running the bot
------------------
+Usage
+-----
 
 The bot can be called with the `hashtablebot` command, with the following options:
 
