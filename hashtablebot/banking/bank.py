@@ -9,6 +9,12 @@ from hashtablebot.user_checks import is_valid_chatter
 
 
 class Bank:
+    """
+    Controls transactions that change BotUser's balance.
+
+    Implemented using the command pattern following `this tutorial<https://www.youtube.com/watch?v=FM71_a3txTo>` to
+    ensure an error in a batch of transactions rolls back changes to all balances.
+    """
     undo_stack: list[Transaction] = list()
     redo_stack: list[Transaction] = list()
 

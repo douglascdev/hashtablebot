@@ -23,31 +23,55 @@ from hashtablebot.user_checks import is_bot_admin_or_mod
 
 
 class HashTableBot(Bot):
+    """
+    The main bot class, inheriting from twitchio.ext.commands.Bot and adding all of HashTableBot's commands.
+
+    Any method decorated with @commands.command gets added automatically as a twitchio command.
+
+    Commands without prefix are of the DefaultNoPrefix class. The objects of this class are added to a list
+    in the constructor and "manually" handled when a message is sent.
+    """
     DEFAULT_COOLDOWN_RATE = 1
     DEFAULT_COOLDOWN_TIME = 30
 
     def __init__(self, token, initial_channels):
         super().__init__(token=token, prefix="$", initial_channels=initial_channels)
         self._no_prefix_commands = (
-            DefaultNoPrefix(("Robert",), "NekoPray Robert"),
-            DefaultNoPrefix(("NekoPray", "Robert"), "NekoPray Robert"),
-            DefaultNoPrefix(("elisElis", "elisTime"), "elisElis elisTime"),
-            DefaultNoPrefix(("elisElis",), "elisElis"),
+            DefaultNoPrefix("Robert", "NekoPray Robert"),
+            DefaultNoPrefix("NekoPray Robert", "NekoPray Robert"),
+            DefaultNoPrefix("elisElis elisTime", "elisElis elisTime"),
+            DefaultNoPrefix("elisElis", "elisElis"),
         )
         self._chatting_message_reward = 1
         self._join_channel_message = ""
 
     async def event_ready(self):
+        """
+        Event called when the Bot has logged in and is ready. Only used for logging purposes.
+        """
         logging.info(f"Logged in as {self.nick}")
         logging.info(f"User id is {self.user_id}")
 
     async def event_channel_joined(self, channel: Channel):
+        """
+        Event called when the Bot has joined a channel.
+
+        If the _join_channel_message variable is set, it's content gets sent to the joined channel.
+
+        :param channel: the joined channel
+        """
         logging.info(f"Joined channel {channel.name}")
 
         if self._join_channel_message:
             await channel.send(f"{self._join_channel_message}")
 
     async def event_message(self, message: Message):
+        """
+        Event called when a message is received.
+        Used to check for commands without a prefix and give point rewards.
+
+        :param message:
+        """
         # Ignore messages sent by the bot
         if message.echo:
             return
@@ -93,6 +117,12 @@ class HashTableBot(Bot):
     )
     @commands.command()
     async def bonk(self, ctx: commands.Context, target: User):
+        """
+        Command to bonk the target user(pings the user with some bonk emotes)
+        :param ctx:
+        :param target: user that should be bonked
+        :return:
+        """
         await ctx.send(f"koroneBonk koroneBonk koroneBonk {target.name}")
 
     @commands.cooldown(
@@ -102,6 +132,12 @@ class HashTableBot(Bot):
     )
     @commands.command(aliases=["gamble"])
     async def gamba(self, ctx: commands.Context, amount: str):
+        """
+        Gamble the specified amount of coins with a 50% chance of winning.
+        :param ctx:
+        :param amount: amount of coins to bet
+        :return:
+        """
         try:
             author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
         except NoResultFound as e:
@@ -145,6 +181,13 @@ class HashTableBot(Bot):
     )
     @commands.command(aliases=["eliscoin", "points"])
     async def eliscoins(self, ctx: commands.Context, target: User = None):
+        """
+        Tells you how many coins the target user has.
+        If no target was specified, tells how many the author has.
+        :param ctx:
+        :param target:
+        :return:
+        """
         if not target:
             target = ctx.message.author
 
@@ -171,6 +214,13 @@ class HashTableBot(Bot):
     )
     @commands.command()
     async def give(self, ctx: commands.Context, target_user: User, amount: str):
+        """
+        Give the amount of coins to the target user
+        :param ctx:
+        :param target_user:
+        :param amount:
+        :return:
+        """
         author_id = ctx.message.author.id
 
         try:
@@ -217,6 +267,11 @@ class HashTableBot(Bot):
     )
     @commands.command(aliases=["commands"])
     async def help(self, ctx: commands.Context):
+        """
+        Reply listing all bot commands
+        :param ctx:
+        :return:
+        """
         try:
             commands_name_list = [
                 f"{self._prefix}{name}" for name, cmd in self.commands.items()
@@ -231,6 +286,11 @@ class HashTableBot(Bot):
 
     @commands.command()
     async def shutdown(self, ctx: commands.Context):
+        """
+        Turn off the bot
+        :param ctx:
+        :return:
+        """
         try:
             if is_bot_admin_or_mod(ctx.author):
                 await ctx.reply("elisLost bye")
