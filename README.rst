@@ -4,15 +4,15 @@ Hash Table Bot
 User install
 -------
 
-#. `Install python3.10 <https://www.python.org/downloads/>`_
-#. Clone the project's repository:
+1. `Install python3.10 <https://www.python.org/downloads/>`_
+2. Clone the project's repository:
 
     .. code-block:: sh
 
         git clone https://github.com/douglascdev/hashtablebot
 
 
-#. Open your terminal application on the project's root folder and run:
+3. Open your terminal application on the project's root folder and run:
 
 .. code-block:: sh
 
