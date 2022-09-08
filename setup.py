@@ -27,6 +27,7 @@ setup(
     extras_require={
         'dev': [
             'sphinx',
+            'sphinx_rtd_theme',
         ]
     }
 )
