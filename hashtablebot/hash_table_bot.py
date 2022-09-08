@@ -6,7 +6,7 @@ from sqlalchemy.exc import NoResultFound
 from twitchio import User, Message, Channel
 from twitchio.ext import commands
 
-from twitchio.ext.commands import MissingRequiredArgument, BadArgument
+from twitchio.ext.commands import Bot, MissingRequiredArgument, BadArgument
 
 from hashtablebot.banking.bank import Bank
 from hashtablebot.banking.commands import Deposit, Withdrawal, Batch
@@ -22,7 +22,7 @@ from hashtablebot.persistence.bot_user_dao import BotUserDao
 from hashtablebot.user_checks import is_bot_admin_or_mod
 
 
-class HashTableBot(commands.Bot):
+class HashTableBot(Bot):
     DEFAULT_COOLDOWN_RATE = 1
     DEFAULT_COOLDOWN_TIME = 30
 
@@ -62,8 +62,8 @@ class HashTableBot(commands.Bot):
                 break
 
         message_is_not_command = (
-                not invoked_no_prefix_command
-                and not message.content.startswith(self._prefix)
+            not invoked_no_prefix_command
+            and not message.content.startswith(self._prefix)
         )
         if message_is_not_command:
             # Distribute point reward for chatting
@@ -86,14 +86,20 @@ class HashTableBot(commands.Bot):
                 logging.exception(e)
                 await message.channel.send(f"Not a valid argument elisStand")
 
-    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
     @commands.command()
     async def bonk(self, ctx: commands.Context, target: User):
-        await ctx.send(
-            f"koroneBonk koroneBonk koroneBonk {target.name}"
-        )
+        await ctx.send(f"koroneBonk koroneBonk koroneBonk {target.name}")
 
-    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
     @commands.command(aliases=["gamble"])
     async def gamba(self, ctx: commands.Context, amount: str):
         try:
@@ -132,7 +138,11 @@ class HashTableBot(commands.Bot):
         BotUserDao.update(author)
         await ctx.send(message)
 
-    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
     @commands.command(aliases=["eliscoin", "points"])
     async def eliscoins(self, ctx: commands.Context, target: User = None):
         if not target:
@@ -154,7 +164,11 @@ class HashTableBot(commands.Bot):
 
         await ctx.reply(f"User {target.name} owns {eliscoins} elisCoin ! {reaction}")
 
-    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
     @commands.command()
     async def give(self, ctx: commands.Context, target_user: User, amount: str):
         author_id = ctx.message.author.id
@@ -196,7 +210,11 @@ class HashTableBot(commands.Bot):
             f"{ctx.message.author.name} gave {amount} elisCoin to {target_user.name} POGGERS"
         )
 
-    @commands.cooldown(rate=DEFAULT_COOLDOWN_RATE, per=DEFAULT_COOLDOWN_TIME, bucket=commands.Bucket.channel)
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
     @commands.command(aliases=["commands"])
     async def help(self, ctx: commands.Context):
         try:
