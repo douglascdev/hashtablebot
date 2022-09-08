@@ -19,11 +19,11 @@ Installation
     pip install --user .
 
 
-For a dev setup, you should instead install using the editable flag, to reflect your changes to the code:
+For a dev setup, you should instead install using the editable flag, to reflect your changes to the code, and the required packages for development:
 
 .. code-block:: sh
 
-    pip install -e .
+    pip install -e .[dev]
 
 
 Usage
