@@ -1,9 +1,12 @@
 from twitchio import Chatter, PartialChatter
 
 
+# TODO: find a better way to do this, maybe a boolean attribute in BotUser
+_admins = {"hash_table"}
+
+
 def is_bot_admin(user: Chatter):
-    admins = {"hash_table"}
-    return user.name in admins
+    return user.name in _admins
 
 
 def is_bot_admin_or_mod(user: Chatter):
