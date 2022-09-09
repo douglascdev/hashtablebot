@@ -179,7 +179,7 @@ class HashTableBot(Bot):
         per=DEFAULT_COOLDOWN_TIME,
         bucket=commands.Bucket.channel,
     )
-    @commands.command(aliases=["eliscoin", "points"])
+    @commands.command(aliases=["eliscoin", "points", "coin", "coins"])
     async def eliscoins(self, ctx: commands.Context, target: User = None):
         """
         Tells you how many coins the target user has.
