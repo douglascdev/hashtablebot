@@ -7,7 +7,7 @@ async def is_bot_admin(user: Chatter):
 
 
 async def is_bot_admin_or_mod(user: Chatter):
-    return is_bot_admin(user) or user and user.is_mod
+    return user and user.is_mod or await is_bot_admin(user)
 
 
 def is_valid_chatter(user: Chatter | PartialChatter | None):

@@ -292,7 +292,7 @@ class HashTableBot(Bot):
         :return:
         """
         try:
-            if is_bot_admin_or_mod(ctx.author):
+            if await is_bot_admin_or_mod(ctx.author):
                 await ctx.reply("elisLost bye")
                 sys.exit(0)
         except Exception as e:
