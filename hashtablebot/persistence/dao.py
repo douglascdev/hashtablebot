@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, Generic, Iterable
 
-from sqlalchemy import select
-
-from hashtablebot.persistence.session import Session
 
 T = TypeVar("T")
 
