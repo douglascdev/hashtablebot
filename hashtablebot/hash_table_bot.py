@@ -31,7 +31,7 @@ class HashTableBot(Bot):
     Commands without prefix are of the DefaultNoPrefix class. The objects of this class are added to a list
     in the constructor and "manually" handled when a message is sent.
     """
-    DEFAULT_COOLDOWN_RATE = 1
+    DEFAULT_COOLDOWN_RATE = 2
     DEFAULT_COOLDOWN_TIME = 30
 
     def __init__(self, token, initial_channels):
