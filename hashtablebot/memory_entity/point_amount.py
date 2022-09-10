@@ -19,7 +19,7 @@ class PointAmountConverter:
         """
         if amount.isnumeric():
             return PointAmountConverter._convert_from_num(amount)
-        elif "%" in amount:
+        elif amount.endswith("%"):
             return PointAmountConverter._convert_from_percentage(amount, bot_user)
         else:
             return PointAmountConverter._convert_from_keyword(amount, bot_user)
@@ -43,7 +43,7 @@ class PointAmountConverter:
             if not bot_user:
                 raise InvalidPointAmountError("Not a valid user!")
 
-            return (100 * int_percentage) // bot_user.balance
+            return (bot_user.balance * int_percentage) // 100
 
     @staticmethod
     def _convert_from_keyword(amount: str, bot_user: BotUser) -> int:
