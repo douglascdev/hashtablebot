@@ -1,10 +1,8 @@
 .. _developer:
 
-Developer documentation
-=======================
+.. toctree::
+    :maxdepth: 2
+    :caption: Developer documentation
 
-* :ref:`build_docs`
-* :ref:`modindex`
-
-.. autosummary::
-   :toctree: generated
+    build_docs
+    api/modules
