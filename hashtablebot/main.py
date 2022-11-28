@@ -50,8 +50,9 @@ def main(token, channels, log_level):
 
     try:
         bot.run()
-    except AuthenticationError as e:
-        print(e)
+    except AuthenticationError:
+        logging.error("An invalid or expired token was passed.")
+
 
 if __name__ == "__main__":
     main()
