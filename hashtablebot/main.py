@@ -1,5 +1,6 @@
 import logging
 import click
+from twitchio import AuthenticationError
 
 from hashtablebot.hash_table_bot import HashTableBot
 
@@ -46,8 +47,11 @@ def main(token, channels, log_level):
     logging.basicConfig(level=log_level)
 
     bot = HashTableBot(token, channels.split(","))
-    bot.run()
 
+    try:
+        bot.run()
+    except AuthenticationError as e:
+        print(e)
 
 if __name__ == "__main__":
     main()

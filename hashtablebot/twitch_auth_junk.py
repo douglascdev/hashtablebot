@@ -1,16 +1,6 @@
 SCOPES = (
-    "channel:edit",
-    "channel:moderate",
-    "channel:manage",
-    "channel:read",
     "chat:read",
     "chat:edit",
-    "moderation:read",
-    "moderator:manage:banned_users",
-    "moderator:manage:chat_messages",
-    "moderator:read:chat_messages",
-    "moderator:manage:chat_messages",
-    "moderator:manage",
 )
 
 
