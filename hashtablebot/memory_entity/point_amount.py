@@ -9,6 +9,7 @@ class PointAmountConverter:
     If a user wants to gamble points, for example, they could want to pass `10%`, `1`, or `all` as an argument
     and still get a result based on how many points they have.
     """
+
     @staticmethod
     def convert(amount: str, bot_user: BotUser) -> int:
         """

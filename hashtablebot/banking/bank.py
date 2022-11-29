@@ -15,6 +15,7 @@ class Bank:
     Uses ArjanCodes's implementation of the Command Design Pattern to
     ensure an error in a batch of transactions rolls back changes to all balances.
     """
+
     undo_stack: list[Transaction] = list()
     redo_stack: list[Transaction] = list()
 
