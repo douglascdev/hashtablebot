@@ -1,6 +1,8 @@
 import logging
 import random
 import sys
+import time
+from asyncio import CancelledError
 
 from sqlalchemy.exc import NoResultFound
 from twitchio import User, Message, Channel
@@ -47,6 +49,8 @@ class HashTableBot(Bot):
         self._join_channel_message = ""
         self._pyramid_length_bounds = (1, 20)
         self._translator = Translator()
+        self._duel_wait_until_go_in_seconds = 6
+        self._duel_timeout_in_seconds = 6
 
     async def event_ready(self):
         """
@@ -298,6 +302,138 @@ class HashTableBot(Bot):
     async def translate(self, ctx: commands.Context, *args):
         message = await self._translator.translate(ctx, args)
         await ctx.send(message.capitalize())
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
+    async def duel(self, ctx: commands.Context, duel_target: User, amount: str):
+        """
+        Duel with target user on rock, paper scissors
+        :param ctx:
+        :param duel_target:
+        :param amount:
+        :return:
+        """
+        author_id = ctx.message.author.id
+
+        try:
+            author_bot_user: BotUser = BotUserDao.get_by_id(author_id)
+        except NoResultFound as e:
+            # If the user is not in the database, they have no coin
+            exception = NotEnoughCoinError(e)
+            logging.exception(exception)
+            await ctx.reply(exception.get_chat_message())
+            return
+
+        try:
+            amount = PointAmountConverter.convert(amount, author_bot_user)
+        except InvalidPointAmountError as e:
+            logging.exception(e)
+            await ctx.reply(e.get_chat_message())
+            return
+
+        try:
+            duel_target_bot_user: BotUser = BotUserDao.get_by_id(duel_target.id)
+        except NoResultFound:
+            # If the target user doesn't exist, we should create it
+            duel_target_bot_user: BotUser = BotUser(id=duel_target.id)
+
+        for bot_user, name in (duel_target_bot_user, duel_target.name), (
+            author_bot_user,
+            ctx.author.name,
+        ):
+            if bot_user.balance < amount:
+                await ctx.reply(f"user {name} only has {amount} points!")
+                return
+
+        valid_answers = "rock", "paper", "scissors"
+        await ctx.send(
+            f"@{duel_target.name} @{ctx.author.name} write your answer as {', '.join(valid_answers)} "
+            f"and wait until I say GO to sent it."
+        )
+
+        time.sleep(self._duel_wait_until_go_in_seconds)
+
+        await ctx.send("GO!!!!!!!!!!!!!!!!!!")
+
+        target_answer = None
+        author_answer = None
+
+        def store_answer(msg: Message):
+            nonlocal target_answer
+            nonlocal author_answer
+
+            if msg.echo:
+                return False
+
+            if msg.author.id == str(duel_target.id):
+                target_answer = msg.content.lower()
+                logging.debug(f"target answer set to {target_answer}")
+            elif msg.author.id == ctx.author.id:
+                author_answer = msg.content.lower()
+                logging.debug(f"author answer set to {author_answer}")
+
+            return target_answer and author_answer
+
+        timeout_time = self._duel_timeout_in_seconds
+
+        try:
+            await self.wait_for("message", store_answer, timeout=timeout_time)
+        except TimeoutError:
+            await ctx.send(
+                f"Answers were not given in {timeout_time} seconds, duel cancelled."
+            )
+
+        for name, answer in (duel_target.name, target_answer), (
+            ctx.author.name,
+            author_answer,
+        ):
+            if answer not in valid_answers:
+                logging.debug(f"Answer {answer} by {name} is not in {valid_answers}")
+                await ctx.send(
+                    f"User {name} did not give a valid answer, so the duel was cancelled. "
+                    f"The valid answers are {', '.join(valid_answers)}."
+                )
+                return
+
+        if author_answer == target_answer:
+            await ctx.send("It's a tie!")
+            return
+
+        wins = {("rock", "scissors"), ("paper", "rock"), ("scissors", "paper")}
+
+        answer = author_answer, target_answer
+        author_won = answer in wins
+
+        if author_won:
+            Bank().execute(
+                Batch(
+                    [
+                        Deposit(bot_user=author_bot_user, amount=amount),
+                        Withdrawal(bot_user=duel_target_bot_user, amount=amount),
+                    ]
+                )
+            )
+
+            BotUserDao.update(duel_target_bot_user, author_bot_user)
+
+            await ctx.send(f"@{ctx.author.name} won the duel and got {amount} points!")
+        else:
+            Bank().execute(
+                Batch(
+                    [
+                        Withdrawal(bot_user=author_bot_user, amount=amount),
+                        Deposit(bot_user=duel_target_bot_user, amount=amount),
+                    ]
+                )
+            )
+
+            BotUserDao.update(duel_target_bot_user, author_bot_user)
+
+            await ctx.send(f"@{duel_target.name} won the duel and got {amount} points!")
 
     @commands.cooldown(
         rate=DEFAULT_COOLDOWN_RATE,
