@@ -1,15 +1,10 @@
-import dataclasses
 import logging
 import random
 import sys
-from enum import StrEnum, auto
 
-import translators as tss
 from sqlalchemy.exc import NoResultFound
-from translators.servers import TranslatorError
 from twitchio import User, Message, Channel
 from twitchio.ext import commands
-
 from twitchio.ext.commands import Bot, MissingRequiredArgument, BadArgument
 
 from hashtablebot.banking.bank import Bank
@@ -23,22 +18,8 @@ from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
 from hashtablebot.memory_entity.point_amount import PointAmountConverter
 from hashtablebot.persistence.bot_user_dao import BotUserDao
+from hashtablebot.translation import Translator
 from hashtablebot.user_checks import is_bot_admin_or_mod
-
-
-@dataclasses.dataclass
-class TranslatedUser:
-    user: User
-    source_lang: str
-    target_lang: str
-    channel: Channel
-
-
-class TranslationType(StrEnum):
-    text = auto()
-    adduser = auto()
-    rmuser = auto()
-    rmall = auto()
 
 
 class HashTableBot(Bot):
@@ -64,8 +45,8 @@ class HashTableBot(Bot):
         )
         self._chatting_message_reward = 1
         self._join_channel_message = ""
-        self._translated_users: dict[tuple[str, int], TranslatedUser] = dict()
         self._pyramid_length_bounds = (1, 20)
+        self._translator = Translator()
 
     async def event_ready(self):
         """
@@ -119,7 +100,7 @@ class HashTableBot(Bot):
             except Exception as e:
                 logging.exception(e)
 
-            await self.translate_user_message(message)
+            await self._translator.translate_user_message(message)
 
         elif not invoked_no_prefix_command:
             try:
@@ -133,29 +114,6 @@ class HashTableBot(Bot):
             except BadArgument as e:
                 logging.exception(e)
                 await message.channel.send(f"Not a valid argument elisStand")
-
-    async def translate_user_message(self, message: Message):
-        try:
-            user: TranslatedUser = self._translated_users[
-                (message.channel.name, int(message.author.id))
-            ]
-
-        except KeyError:
-            logging.info(f"No translation found for user {message.author.name}")
-            return
-
-        try:
-            logging.debug(
-                f"Translating '{message.content}' from '{user.source_lang}' to '{user.target_lang}'"
-            )
-            translated_msg = tss.google(
-                message.content, user.source_lang, user.target_lang
-            )
-        except Exception as e:
-            logging.exception(e)
-            return
-
-        await message.channel.send(f"{message.author.name}: {translated_msg}")
 
     @commands.cooldown(
         rate=DEFAULT_COOLDOWN_RATE,
@@ -338,109 +296,8 @@ class HashTableBot(Bot):
     )
     @commands.command(aliases=["tl"])
     async def translate(self, ctx: commands.Context, *args):
-        args: tuple[str, ...]
-
-        try:
-            translation_type, *other_args = args
-            translation_type: TranslationType = TranslationType[translation_type]
-        except (KeyError, ValueError):
-            valid_types = ", ".join((t for t in TranslationType))
-            await ctx.reply(f"Invalid translation type. Accepted values: {valid_types}")
-            return
-
-        match translation_type:
-            case TranslationType.text:
-                try:
-                    source_lang, target_lang, *text = other_args
-                    text = " ".join(text)
-
-                except ValueError:
-                    if not other_args:
-                        await ctx.reply("No text was given for translation.")
-                        return
-
-                    source_lang = "auto"
-                    target_lang = "en"
-                    logging.debug(
-                        f"No source or target languages passed, using {source_lang} and {target_lang}"
-                    )
-                    text = " ".join(other_args)
-
-                try:
-                    logging.debug(
-                        f"Translating '{text}' from '{source_lang}' to '{target_lang}'"
-                    )
-                    await ctx.send(tss.google(text, source_lang, target_lang))
-                except TranslatorError:
-                    logging.debug(
-                        "Initial translation failed, attempting with default values"
-                    )
-
-                    # User didn't pass a valid source/target, so default to auto and english
-                    source_lang = "auto"
-                    target_lang = "en"
-                    text = " ".join(other_args)
-
-                    try:
-                        logging.debug(
-                            f"Translating '{text}' from '{source_lang}' to '{target_lang}'"
-                        )
-                        await ctx.send(tss.google(text, source_lang, target_lang))
-                    except TranslatorError as e:
-                        await ctx.reply("an unexpected error occurred on translation.")
-                        logging.exception(e)
-
-            case TranslationType.adduser:
-                try:
-                    target_user_name, source_lang, target_lang = other_args
-                except ValueError:
-                    await ctx.reply(
-                        "not enough arguments. Include user, source language and target language"
-                    )
-                    return
-
-                try:
-                    (target_user,) = await self.fetch_users(names=[target_user_name])
-                except Exception:
-                    await ctx.reply(f"could not find user {target_user_name}")
-                    return
-
-                new_user = TranslatedUser(
-                    target_user, source_lang, target_lang, ctx.channel
-                )
-                self._translated_users[(ctx.channel.name, target_user.id)] = new_user
-                await ctx.reply(
-                    f"Now translating user {new_user.user.name}. "
-                    f"Use {self._prefix}tl rmuser <user> to stop translating."
-                )
-
-            case TranslationType.rmuser:
-                try:
-                    (target_user_name,) = other_args
-                except ValueError:
-                    await ctx.reply("please include the target user.")
-                    return
-
-                try:
-                    (target_user,) = await self.fetch_users(names=[target_user_name])
-                except Exception:
-                    await ctx.reply(f"could not find user {target_user_name}")
-                    return
-
-                try:
-                    del self._translated_users[(ctx.channel.name, target_user.id)]
-                except KeyError:
-                    msg = f"there's no active translation for user {target_user.name}."
-                    await ctx.reply(msg)
-                    logging.exception(msg)
-
-            case TranslationType.rmall:
-                if not ctx.author.is_mod:
-                    await ctx.reply("you're not a moderator.")
-                    return
-
-                self._translated_users = dict()
-                await ctx.reply("the user translation list was reset.")
+        message = await self._translator.translate(ctx, args)
+        await ctx.send(message.capitalize())
 
     @commands.cooldown(
         rate=DEFAULT_COOLDOWN_RATE,
