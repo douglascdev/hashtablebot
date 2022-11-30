@@ -135,8 +135,8 @@ class HashTableBot(Bot):
         per=DEFAULT_COOLDOWN_TIME,
         bucket=commands.Bucket.channel,
     )
-    @commands.command(aliases=["gamble"])
-    async def gamba(self, ctx: commands.Context, amount: str):
+    @commands.command(aliases=["gamba"])
+    async def gamble(self, ctx: commands.Context, amount: str):
         """
         Gamble the specified amount of coins with a 50% chance of winning.
         :param ctx:
