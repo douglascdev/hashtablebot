@@ -65,6 +65,7 @@ class HashTableBot(Bot):
         self._chatting_message_reward = 1
         self._join_channel_message = ""
         self._translated_users: dict[tuple[str, int], TranslatedUser] = dict()
+        self._pyramid_length_bounds = (1, 20)
 
     async def event_ready(self):
         """
@@ -440,6 +441,38 @@ class HashTableBot(Bot):
 
                 self._translated_users = dict()
                 await ctx.reply("the user translation list was reset.")
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
+    async def pyramid(self, ctx: commands.Context, emote: str, length: int):
+        min_length, max_length = self._pyramid_length_bounds
+
+        if length > max_length:
+            await ctx.reply(f"I can only count to {max_length} menheraLost")
+            return
+
+        if length < min_length:
+            await ctx.reply(f"minimum length is {min_length} menheraLost")
+            return
+
+        if not ctx.author.is_mod:
+            await ctx.reply("only mods are allowed to do this.")
+            return
+
+        first_half = [" ".join([emote] * i) for i in range(1, length + 1)]
+
+        for line in first_half:
+            await ctx.send(line)
+
+        reversed_iter = reversed(first_half)
+        next(reversed_iter)
+
+        for line in reversed_iter:
+            await ctx.send(line)
 
     @commands.command()
     async def shutdown(self, ctx: commands.Context):
