@@ -180,7 +180,7 @@ class Translator:
         self._translated_users[(ctx.channel.name, target_user.id)] = new_user
         return (
             f"Now translating user {new_user.user.name}. "
-            f"Use {ctx.bot._prefix}tl rmuser <user> to stop translating."
+            f"Use {await ctx.bot._prefix(self, ctx.message)}tl rmuser <user> to stop translating."
         )
 
     async def _remove_translated_user(self, ctx, other_args):
