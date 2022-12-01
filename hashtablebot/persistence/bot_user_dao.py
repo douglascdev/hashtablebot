@@ -58,6 +58,12 @@ class BotUserDao(Dao[BotUser]):
             db_session.commit()
 
     @staticmethod
+    def get_all_joined_channels() -> list[BotUser]:
+        with Session.begin() as db_session:
+            query = select(BotUser).filter(BotUser.bot_joined_channel)
+            return list(db_session.execute(query).scalars())
+
+    @staticmethod
     def get_until_limit_order_by_balance_desc(limit: int) -> list[BotUser]:
         with Session.begin() as db_session:
             query = select(BotUser).order_by(desc(BotUser.balance)).limit(limit)
