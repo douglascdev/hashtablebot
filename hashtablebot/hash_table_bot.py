@@ -227,6 +227,10 @@ class HashTableBot(Bot):
         """
         Leave message author's channel. The joined status is persisted.
         """
+        if not ctx.author.is_mod:
+            await ctx.reply("only moderators are allowed to make me leave.")
+            return
+
         try:
             author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
             assert author.bot_joined_channel is True
@@ -591,6 +595,17 @@ class HashTableBot(Bot):
     async def catarrive(self, ctx: commands.Context, emote: str):
         for message in ("catArrive", emote, "catLeave"):
             await ctx.send(message)
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
+    async def padoru(self, ctx: commands.Context, emote: str):
+        lyrics = "HASHIRE SORI YO", "KAZE NO YOU NI", "TSUKIMIHARA WO", "PADORU PADORU"
+        for line in lyrics:
+            await ctx.send(f"/me {emote} {line} {emote}")
 
     @commands.cooldown(
         rate=DEFAULT_COOLDOWN_RATE,
