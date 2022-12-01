@@ -16,7 +16,7 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.add_column("botuser", sa.Column("bot_joined_channel", sa.Boolean))
+    op.add_column("botuser", sa.Column("bot_joined_channel", sa.Boolean, nullable=False, server_default="0"))
 
 
 def downgrade() -> None:
