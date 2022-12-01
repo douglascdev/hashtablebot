@@ -66,8 +66,9 @@ class HashTableBot(Bot):
         )
         names = {
             ttv_user.name
-            for ttv_user in joined_channel_ttv_users + self._initial_channels
+            for ttv_user in joined_channel_ttv_users
         }
+        names = names.union(self._initial_channels)
 
         await self.join_channels(list(names))
 
