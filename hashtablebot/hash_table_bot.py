@@ -222,6 +222,47 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command()
+    async def setpoints(self, ctx: commands.Context, target_user: User, amount: int):
+        if not ctx.author.is_mod:
+            await ctx.reply("you're not a moderator...")
+            return
+
+        try:
+            target_bot_user: BotUser = BotUserDao.get_by_id(target_user.id)
+        except NoResultFound:
+            # If the target user doesn't exist, we should create it
+            target_bot_user: BotUser = BotUser(id=target_user.id)
+
+        target_bot_user.balance = amount
+
+        BotUserDao.update(target_bot_user)
+
+        await ctx.send(f"{ctx.message.author.name} now has {amount} points!")
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command(aliases=["leaderboards", "lb"])
+    async def leaderboard(self, ctx: commands.Context):
+        bot_users: list[BotUser] = BotUserDao.get_until_limit_order_by_balance_desc(5)
+        twitch_users: list[User] = await self.fetch_users(
+            ids=[user.id for user in bot_users]
+        )
+        id_to_name = {user.id: user.name for user in twitch_users}
+        leaderboard_list = [
+            f"{i}. {id_to_name[bot_user.id]}: {bot_user.balance}"
+            for i, bot_user in enumerate(bot_users, start=1)
+        ]
+        await ctx.send(" ".join(leaderboard_list))
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
     async def give(self, ctx: commands.Context, target_user: User, amount: str):
         """
         Give the amount of coins to the target user

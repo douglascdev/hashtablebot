@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from sqlalchemy import select
+from sqlalchemy import select, desc
 
 from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.persistence.dao import Dao
@@ -56,3 +56,9 @@ class BotUserDao(Dao[BotUser]):
                 db_session.delete(obj)
 
             db_session.commit()
+
+    @staticmethod
+    def get_until_limit_order_by_balance_desc(limit: int) -> list[BotUser]:
+        with Session.begin() as db_session:
+            query = select(BotUser).order_by(desc(BotUser.balance)).limit(limit)
+            return list(db_session.execute(query).scalars())
