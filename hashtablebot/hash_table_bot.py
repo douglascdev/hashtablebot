@@ -38,7 +38,7 @@ class HashTableBot(Bot):
     DEFAULT_COOLDOWN_TIME = 30
 
     def __init__(self, token, initial_channels):
-        super().__init__(token=token, prefix="$", initial_channels=initial_channels)
+        super().__init__(token=token, prefix="$")
         self._no_prefix_commands = (
             DefaultNoPrefix("Robert", "NekoPray Robert"),
             DefaultNoPrefix("NekoPray Robert", "NekoPray Robert"),
@@ -46,6 +46,7 @@ class HashTableBot(Bot):
             DefaultNoPrefix("elisElis", "elisElis"),
         )
         self._chatting_message_reward = 1
+        self._initial_channels = initial_channels
         self._join_channel_message = ""
         self._pyramid_length_bounds = (1, 20)
         self._translator = Translator()
@@ -54,10 +55,21 @@ class HashTableBot(Bot):
 
     async def event_ready(self):
         """
-        Event called when the Bot has logged in and is ready. Only used for logging purposes.
+        Event called when the Bot has logged in and is ready.
         """
         logging.info(f"Logged in as {self.nick}")
         logging.info(f"User id is {self.user_id}")
+
+        joined_channel_bot_users = BotUserDao.get_all_joined_channels()
+        joined_channel_ttv_users = await self.fetch_users(
+            ids=[bot_user.id for bot_user in joined_channel_bot_users]
+        )
+        names = {
+            ttv_user.name
+            for ttv_user in joined_channel_ttv_users + self._initial_channels
+        }
+
+        await self.join_channels(list(names))
 
     async def event_channel_joined(self, channel: Channel):
         """
@@ -133,6 +145,54 @@ class HashTableBot(Bot):
         :return:
         """
         await ctx.send(f"koroneBonk koroneBonk koroneBonk {target.name}")
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
+    async def join(self, ctx: commands.Context):
+        """
+        Join message author's channel. The joined status is persisted.
+        """
+        try:
+            author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
+        except NoResultFound:
+            author: BotUser = BotUser(id=int(ctx.author.id))
+
+        if author.bot_joined_channel:
+            await ctx.reply("already joined channel.")
+            return
+
+        author.bot_joined_channel = True
+        BotUserDao.update(author)
+
+        await self.join_channels((ctx.author.name,))
+        await ctx.reply(f"joined channel '{ctx.author.name}'")
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
+    async def leave(self, ctx: commands.Context):
+        """
+        Leave message author's channel. The joined status is persisted.
+        """
+        try:
+            author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
+            assert author.bot_joined_channel is True
+        except (NoResultFound, AssertionError):
+            await ctx.reply("I have not joined your channel.")
+            return
+
+        author.bot_joined_channel = False
+        BotUserDao.update(author)
+
+        await ctx.reply(f"left channel '{ctx.author.name}'.")
+        await self.part_channels((ctx.author.name,))
 
     @commands.cooldown(
         rate=DEFAULT_COOLDOWN_RATE,
