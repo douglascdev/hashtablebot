@@ -588,6 +588,16 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command()
+    async def catarrive(self, ctx: commands.Context, emote: str):
+        for message in ("catArrive", emote, "catLeave"):
+            await ctx.send(message)
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
     async def pyramid(self, ctx: commands.Context, emote: str, length: int):
         min_length, max_length = self._pyramid_length_bounds
 
