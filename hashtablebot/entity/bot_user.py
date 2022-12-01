@@ -1,6 +1,6 @@
 import dataclasses
 
-from sqlalchemy import Column, Integer, Boolean, Table
+from sqlalchemy import Column, Integer, Boolean, String, Table
 from sqlalchemy.orm import registry
 
 from hashtablebot.bot_exceptions import NotEnoughCoinError
@@ -21,6 +21,11 @@ class BotUser:
 
     id: int = dataclasses.field(init=True)
     balance: int = 0
+
+    """
+    If the user ran the join command this is set to true
+    so that the bot joins again even after shutting down
+    """
     bot_joined_channel: bool = False
 
     def deposit(self, amount: int):
