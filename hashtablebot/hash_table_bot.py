@@ -228,10 +228,6 @@ class HashTableBot(Bot):
         """
         Leave message author's channel. The joined status is persisted.
         """
-        if not ctx.author.is_mod:
-            await ctx.reply("only moderators are allowed to make me leave.")
-            return
-
         try:
             author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
             assert author.bot_joined_channel is True
