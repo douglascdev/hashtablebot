@@ -181,6 +181,7 @@ class HashTableBot(Bot):
 
         author.bot_joined_channel = True
         BotUserDao.update(author)
+        self._channel_id_to_prefix[author.id] = "$"
 
         await self.join_channels((ctx.author.name,))
         await ctx.reply(f"joined channel '{ctx.author.name}'")
