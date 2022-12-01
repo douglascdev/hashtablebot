@@ -58,6 +58,10 @@ def translate_text(
     :raises TranslatorError
     """
     logging.debug(f"Translating from '{source_lang}' to '{target_lang}' text '{text}'.")
+
+    if not text:
+        raise TranslatorError
+
     return tss.google(text, source_lang, target_lang)
 
 
@@ -149,7 +153,7 @@ class Translator:
             logging.debug("Initial translation failed, attempting with default values")
 
             """
-            User didn't pass a valid source/target, so use the default values
+            Assume user didn't pass a valid source/target, so use the default values
             and treat all arguments as text
             """
             source_lang = DEFAULT_SOURCE_LANG
