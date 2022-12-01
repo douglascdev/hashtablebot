@@ -17,6 +17,7 @@ class BotUser:
         Column("id", Integer, primary_key=True),
         Column("balance", Integer),
         Column("bot_joined_channel", Boolean),
+        Column("bot_command_prefix", String),
     )
 
     id: int = dataclasses.field(init=True)
@@ -27,6 +28,12 @@ class BotUser:
     so that the bot joins again even after shutting down
     """
     bot_joined_channel: bool = False
+
+    """
+    The command prefix the bot should respond to when in 
+    the user's channel.
+    """
+    bot_command_prefix: str = "$"
 
     def deposit(self, amount: int):
         self.balance += amount
