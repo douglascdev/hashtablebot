@@ -38,7 +38,7 @@ class HashTableBot(Bot):
     DEFAULT_COOLDOWN_TIME = 30
 
     def __init__(self, token, initial_channels):
-        super().__init__(token=token, prefix="$")
+        super().__init__(token=token, prefix=self._get_bot_prefix)
         self._no_prefix_commands = (
             DefaultNoPrefix("Robert", "NekoPray Robert"),
             DefaultNoPrefix("NekoPray Robert", "NekoPray Robert"),
@@ -52,6 +52,15 @@ class HashTableBot(Bot):
         self._translator = Translator()
         self._duel_wait_until_go_in_seconds = 6
         self._duel_timeout_in_seconds = 6
+        self._channel_id_to_prefix: dict[int, str] = dict()
+
+    async def _get_bot_prefix(self, _: Bot, message: Message):
+        try:
+            channel_id = (await message.channel.user()).id
+            return self._channel_id_to_prefix[channel_id]
+        except Exception as e:
+            logging.exception(e)
+            return "$"
 
     async def event_ready(self):
         """
@@ -61,6 +70,10 @@ class HashTableBot(Bot):
         logging.info(f"User id is {self.user_id}")
 
         joined_channel_bot_users = BotUserDao.get_all_joined_channels()
+
+        for channel_bot_user in joined_channel_bot_users:
+            self._channel_id_to_prefix[int(channel_bot_user.id)] = channel_bot_user.bot_command_prefix
+
         joined_channel_ttv_users = await self.fetch_users(
             ids=[bot_user.id for bot_user in joined_channel_bot_users]
         )
@@ -107,7 +120,7 @@ class HashTableBot(Bot):
 
         message_is_not_command = (
             not invoked_no_prefix_command
-            and not message.content.startswith(self._prefix)
+            and not message.content.startswith(await self._prefix(self, message))
         )
         if message_is_not_command:
             # Distribute point reward for chatting
@@ -171,6 +184,38 @@ class HashTableBot(Bot):
 
         await self.join_channels((ctx.author.name,))
         await ctx.reply(f"joined channel '{ctx.author.name}'")
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
+    async def setprefix(self, ctx: commands.Context, prefix: str):
+        """
+        Set the bot's prefix for this channel
+        """
+        if not ctx.author.is_mod:
+            await ctx.reply("only moderators are allowed to set my prefix.")
+            return
+
+        try:
+            channel_ttv_user = await ctx.channel.user()
+        except Exception as e:
+            logging.exception(e)
+            await ctx.reply("could not fetch channel user.")
+            return
+
+        try:
+            channel_bot_user: BotUser = BotUserDao.get_by_id(int(channel_ttv_user.id))
+        except NoResultFound:
+            channel_bot_user: BotUser = BotUser(id=int(ctx.author.id))
+
+        self._channel_id_to_prefix[channel_bot_user.id] = prefix
+        channel_bot_user.bot_command_prefix = prefix
+        BotUserDao.update(channel_bot_user)
+
+        await ctx.reply(f"prefix set to '{prefix}'.")
 
     @commands.cooldown(
         rate=DEFAULT_COOLDOWN_RATE,
@@ -385,7 +430,7 @@ class HashTableBot(Bot):
         """
         try:
             commands_name_list = [
-                f"{self._prefix}{name}" for name, cmd in self.commands.items()
+                f"{await self._prefix(self, ctx.message)}{name}" for name, cmd in self.commands.items()
             ]
             commands_name_list += [
                 f"'{' '.join(cmd.names)}'" for cmd in self._no_prefix_commands
