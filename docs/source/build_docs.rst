@@ -12,7 +12,7 @@ The documentation in docstrings has to be "converted" to .rst files using autodo
 
 .. code-block:: sh
 
-        sphinx-apidoc --force -o docs/source/modules hashtablebot
+        sphinx-apidoc --force -o docs/source/api hashtablebot
 
 Building the docs
 -----------------
