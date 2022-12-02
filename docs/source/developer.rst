@@ -1,9 +1,11 @@
 .. _developer:
 
+Developer documentation
+=======================
+
 .. toctree::
-    :maxdepth: 2
-    :caption: Developer documentation
+    :maxdepth: 3
 
     build_docs
     persistence
-    api/modules
+    api/code_documentation

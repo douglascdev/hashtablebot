@@ -39,10 +39,10 @@ hashtablebot.main module
    :undoc-members:
    :show-inheritance:
 
-hashtablebot.twitch\_auth\_junk module
---------------------------------------
+hashtablebot.translation module
+-------------------------------
 
-.. automodule:: hashtablebot.twitch_auth_junk
+.. automodule:: hashtablebot.translation
    :members:
    :undoc-members:
    :show-inheritance:
