@@ -494,7 +494,7 @@ class HashTableBot(Bot):
             ctx.author.name,
         ):
             if bot_user.balance < amount:
-                await ctx.reply(f"user {name} only has {amount} points!")
+                await ctx.reply(f"user {name} only has {bot_user.balance} points!")
                 return
 
         valid_answers = "rock", "paper", "scissors"
