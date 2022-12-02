@@ -10,4 +10,12 @@ def get_token_url(client_id: str) -> str:
     params = {
         "response_type": "token",
     }
-    return f"{twitch_auth_url}?response_type=token&client_id={client_id}&redirect_uri=http://localhost&scope={uri_formatted_scopes}"
+    return f"{twitch_auth_url}?" \
+           f"response_type=token&" \
+           f"client_id={client_id}&" \
+           f"redirect_uri=http://localhost&scope={uri_formatted_scopes}"
+
+
+if __name__ == "__main__":
+    input_client_id = input("Client id: ")
+    print(f"URL: {get_token_url(input_client_id)}")

@@ -28,8 +28,8 @@ For a dev setup, you should instead install using the editable flag, to reflect 
     pip install -e .[dev]
 
 
-Usage
------
+Options
+-------
 
 The bot can be called with the `hashtablebot` command, with the following options:
 
@@ -51,6 +51,26 @@ The bot can be called with the `hashtablebot` command, with the following option
           --help                          Show this message and exit.
 
 The arguments can also be passed using environment variables, to make cloud deployment easier.
+
+Getting a token
+---------------
+
+Until a proper authorization grant flow is implemented as part of the bot, the easiest way to get an OAuth token is to
+use `Twitch Token Generator <https://twitchtokengenerator.com/>`_.
+
+Alternatively, copy the following url and replace `MY_CLIENT_ID` with your client id and set your app's redirect URI on
+twitch's dev dashboard to `http://localhost`.
+
+.. code-block::
+
+        https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=MY_CLIENT_ID&redirect_uri=http://localhost&scope=chat%3Aread+chat%3Aedit
+
+
+After accessing the URL and authorizing access, you'll be redirected to
+`localhost` and the OAuth token will be part of the URL.
+
+Usage
+-----
 
 Here are some usage examples:
 
