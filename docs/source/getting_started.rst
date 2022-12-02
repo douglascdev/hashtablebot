@@ -6,7 +6,7 @@ Getting started
 Installation
 ------------
 
-1. `Install python3.10 <https://www.python.org/downloads/>`_
+1. `Install python3.11 <https://www.python.org/downloads/>`_
 2. Clone the project's repository:
 
 .. code-block:: sh
