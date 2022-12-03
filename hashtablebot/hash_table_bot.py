@@ -72,15 +72,14 @@ class HashTableBot(Bot):
         joined_channel_bot_users = BotUserDao.get_all_joined_channels()
 
         for channel_bot_user in joined_channel_bot_users:
-            self._channel_id_to_prefix[int(channel_bot_user.id)] = channel_bot_user.bot_command_prefix
+            self._channel_id_to_prefix[
+                int(channel_bot_user.id)
+            ] = channel_bot_user.bot_command_prefix
 
         joined_channel_ttv_users = await self.fetch_users(
             ids=[bot_user.id for bot_user in joined_channel_bot_users]
         )
-        names = {
-            ttv_user.name
-            for ttv_user in joined_channel_ttv_users
-        }
+        names = {ttv_user.name for ttv_user in joined_channel_ttv_users}
         names = names.union(self._initial_channels)
 
         await self.join_channels(list(names))
@@ -431,7 +430,8 @@ class HashTableBot(Bot):
         """
         try:
             commands_name_list = [
-                f"{await self._prefix(self, ctx.message)}{name}" for name, cmd in self.commands.items()
+                f"{await self._prefix(self, ctx.message)}{name}"
+                for name, cmd in self.commands.items()
             ]
             commands_name_list += [
                 f"'{' '.join(cmd.names)}'" for cmd in self._no_prefix_commands
