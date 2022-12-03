@@ -621,8 +621,8 @@ class HashTableBot(Bot):
             await ctx.reply(f"minimum length is {min_length} menheraLost")
             return
 
-        if not ctx.author.is_mod:
-            await ctx.reply("only mods are allowed to do this.")
+        if not (ctx.author.is_mod or ctx.author.is_vip):
+            await ctx.reply("only mods and VIPs are allowed to do this.")
             return
 
         first_half = [" ".join([emote] * i) for i in range(1, length + 1)]
