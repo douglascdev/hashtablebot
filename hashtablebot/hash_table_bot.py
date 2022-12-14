@@ -21,7 +21,7 @@ from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
 from hashtablebot.memory_entity.point_amount import PointAmountConverter
 from hashtablebot.persistence.bot_user_dao import BotUserDao
 from hashtablebot.translation import Translator
-from hashtablebot.user_checks import is_bot_admin_or_mod
+from hashtablebot.user_checks import is_bot_admin_or_mod, is_bot_admin
 
 
 class HashTableBot(Bot):
@@ -644,7 +644,7 @@ class HashTableBot(Bot):
         :return:
         """
         try:
-            if is_bot_admin_or_mod(ctx.author):
+            if is_bot_admin(ctx.author):
                 await ctx.reply("elisLost bye")
                 sys.exit(0)
         except Exception as e:
