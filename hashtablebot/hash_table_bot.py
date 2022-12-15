@@ -48,7 +48,7 @@ class HashTableBot(Bot):
         self._chatting_message_reward = 1
         self._initial_channels = initial_channels
         self._join_channel_message = ""
-        self._pyramid_length_bounds = (1, 20)
+        self._pyramid_length_bounds = (1, 10)
         self._translator = Translator()
         self._duel_wait_until_go_in_seconds = 6
         self._duel_timeout_in_seconds = 2
