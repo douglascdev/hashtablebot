@@ -3,7 +3,7 @@ import logging
 from enum import StrEnum, auto
 
 import translators as tss
-from translators.servers import TranslatorError
+from translators.server import TranslatorError
 from twitchio import User, Channel, Message
 
 DEFAULT_SOURCE_LANG = "auto"
