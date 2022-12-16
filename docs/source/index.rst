@@ -27,6 +27,18 @@ Indices and tables
 * :ref:`search`
 
 .. toctree::
-   getting_started
-   developer
+    :caption: User documentation
+    :maxdepth: 2
+
+    getting_started
+
+
+.. toctree::
+    :caption: Developer documentation
+    :maxdepth: 2
+
+    twitch
+    build_docs
+    persistence
+    api/code_documentation
 
