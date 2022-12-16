@@ -449,7 +449,11 @@ class HashTableBot(Bot):
     @commands.command(aliases=["tl"])
     async def translate(self, ctx: commands.Context, *args):
         message = await self._translator.translate(ctx, args)
-        await ctx.send(message.capitalize())
+        """
+        Sending the translated message directly to chat allows users to execute
+        twitch commands using the bot. Don't remove the 'Translation' part.
+        """
+        await ctx.send(f"Translation: {message.capitalize()}")
 
     @commands.cooldown(
         rate=DEFAULT_COOLDOWN_RATE,
