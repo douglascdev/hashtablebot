@@ -93,7 +93,11 @@ class Translator:
 
         match translation_type:
             case TranslationType.text:
-                return await self._translate_message_text(other_args)
+                """
+                Sending the translated message directly to chat allows users to execute
+                twitch commands using the bot. Don't remove the 'Translation' part.
+                """
+                return "Translation: " + await self._translate_message_text(other_args)
 
             case TranslationType.adduser:
                 return await self._add_translated_user(ctx, other_args)
