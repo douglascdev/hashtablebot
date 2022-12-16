@@ -58,6 +58,9 @@ Getting a token
 Until a proper authorization grant flow is implemented as part of the bot, the easiest way to get an OAuth token is to
 use `Twitch Token Generator <https://twitchtokengenerator.com/>`_.
 
+.. WARNING::
+   As a security measure, DO NOT request scopes besides reading and writing to chat.
+
 Alternatively, copy the following url and replace `MY_CLIENT_ID` with your client id and set your app's redirect URI on
 twitch's dev dashboard to `http://localhost`.
 
