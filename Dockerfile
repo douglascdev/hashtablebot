@@ -6,6 +6,7 @@ ENV CHANNELS=${channels}
 ENV TOKEN=${token}
 ENV LOG_LEVEL=INFO
 ENV PYTHONPATH=/hashtablebot
+ENV PYTHONUNBUFFERED=1
 COPY hashtablebot hashtablebot
 COPY requirements.txt .
 RUN pip install -r requirements.txt
