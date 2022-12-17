@@ -6,26 +6,72 @@ Getting started
 Installation
 ------------
 
-1. `Install python3.11 <https://www.python.org/downloads/>`_
+1. Install `Docker compose <https://docs.docker.com/compose/install/>`_
 2. Clone the project's repository:
 
 .. code-block:: sh
 
     git clone https://github.com/douglascdev/hashtablebot
 
-
-3. Open your terminal application on the project's root folder and run:
+3. Change to the repository's folder on your terminal:
 
 .. code-block:: sh
 
-    pip install --user .
+    cd hashtablebot
 
+4. Create a file called :code:`.env` with the following contents:
 
-For a dev setup, you should instead install using the editable flag, to reflect your changes to the code, and the required packages for development:
+.. code-block:: sh
+
+    POSTGRES_USER=hashtablebot
+    POSTGRES_PASSWORD=hashtablebot
+    POSTGRES_DB=hashtablebot
+    POSTGRES_HOST=postgres
+
+    LOG_LEVEL=INFO
+    CHANNELS=<your twitch channel>
+    TOKEN=<your twitch token>
+
+Note that the :code:`TOKEN` (see the Getting a token section below) and :code:`CHANNELS` values must be changed.
+
+5. Run the containers:
+
+.. code-block:: sh
+    docker compose up
+
+If the :code:`.env` values were setup correctly, this should startup the bot and the database.
+
+Developer setup
+---------------
+
+Running the bot without docker might be preferable to developers.
+If that's your case, do these in addition to the installation instructions:
+
+1. `Install python3.11 <https://www.python.org/downloads/>`_
+2. Open your terminal application on the project's root folder and run:
 
 .. code-block:: sh
 
     pip install -e .[dev]
+
+3. Instead of running both containers, run only the database:
+
+.. code-block:: sh
+
+    docker compose up postgres
+
+4. Set the environment variables defined previously in :code:`.env`. On Linux, you can use :code:`source` to load
+the variables you set on the file:
+
+.. code-block:: sh
+
+    set -o allexport && source .env && set +o allexport
+
+5. Run the bot
+
+.. code-block:: sh
+
+    hashtablebot
 
 
 Options
