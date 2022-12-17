@@ -3,7 +3,7 @@ services:
     container_name: bot
     build: .
     working_dir: /hashtablebot
-    command: "python3 main.py 1> bot_output 2> bot_errors"
+    command: "python3 main.py"
     environment:
       - PYTHONPATH=/
       - PYTHONUNBUFFERED=1
