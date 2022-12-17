@@ -12,9 +12,8 @@ DBMS-independent code and makes storing and retrieving data a easier and less er
 SQLAlchemy
 ----------
 
-The bot uses `SQLAlchemy 1.4 <https://docs.sqlalchemy.org/en/14/contents.html>`_ as ORM. Currently the bot uses an
-SQLite database file(`hashtablebot.db` in the package folder) to store data, but a separate database application will
-be used in the future.
+The bot uses `SQLAlchemy 1.4 <https://docs.sqlalchemy.org/en/14/contents.html>`_ as ORM, which connects to a Postgres
+server running in a docker compose container.
 
 The :py:mod:`hashtablebot.persistence` package contains the code that handles persisting and retrieving data, and
 :py:mod:`hashtablebot.entity` defines the Python objects to be persisted and their corresponding table structures.
