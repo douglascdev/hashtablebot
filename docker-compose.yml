@@ -16,7 +16,7 @@ services:
     container_name: postgres
     image: postgres:15.1-alpine
     volumes:
-      - /postgres_data:/postgres_data
+      - /postgres_data:/var/lib/postgresql
     env_file:
       - .env
     ports:
