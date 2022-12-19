@@ -3,6 +3,7 @@ import random
 import sys
 import time
 from asyncio import CancelledError
+from datetime import datetime, timedelta
 
 from sqlalchemy.exc import NoResultFound
 from twitchio import User, Message, Channel
@@ -45,6 +46,7 @@ class HashTableBot(Bot):
             DefaultNoPrefix("elisElis elisTime", "elisElis elisTime"),
             DefaultNoPrefix("elisElis", "elisElis"),
         )
+        self._startup_time = datetime.now()
         self._chatting_message_reward = 1
         self._initial_channels = initial_channels
         self._join_channel_message = ""
@@ -635,6 +637,18 @@ class HashTableBot(Bot):
 
         for line in reversed_iter:
             await ctx.send(line)
+
+    @commands.cooldown(
+        rate=DEFAULT_COOLDOWN_RATE,
+        per=DEFAULT_COOLDOWN_TIME,
+        bucket=commands.Bucket.channel,
+    )
+    @commands.command()
+    async def ping(self, ctx: commands.Context):
+        uptime: timedelta = datetime.now() - self._startup_time
+        days, hours, minutes = uptime.days, uptime.seconds//3600, (uptime.seconds//60) % 60
+        n_channels = len(self.connected_channels)
+        await ctx.reply(f"Pong! Uptime: {days}d{hours}h{minutes}m  | Channels: {n_channels}")
 
     @commands.command()
     async def shutdown(self, ctx: commands.Context):
