@@ -414,11 +414,13 @@ class HashTableBot(Bot):
             await ctx.reply(e.get_chat_message())
             return
 
+        target_bot_user: BotUser
+
         try:
-            target_bot_user: BotUser = BotUserDao.get_by_id(target_user.id)
+            target_bot_user = BotUserDao.get_by_id(target_user.id)
         except NoResultFound:
             # If the target user doesn't exist, we should create it
-            target_bot_user: BotUser = BotUser(id=target_user.id)
+            target_bot_user = BotUser(id=target_user.id)
 
         Bank().execute(
             Batch(
