@@ -108,6 +108,11 @@ class Translator:
             case TranslationType.rmall:
                 return await self._remove_all_translated_users(ctx)
 
+            case _:
+                error = "invalid translation type."
+                logging.error(error)
+                return error
+
     async def translate_user_message(self, message: Message) -> None:
         """
         Checks if message author is in the _translated_users list and

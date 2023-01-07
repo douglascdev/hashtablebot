@@ -12,9 +12,11 @@ from twitchio.ext.commands import BadArgument, Bot, MissingRequiredArgument
 
 from hashtablebot.banking.bank import Bank
 from hashtablebot.banking.commands import Batch, Deposit, Withdrawal
-from hashtablebot.bot_exceptions import (ExceptionWithChatMessage,
-                                         InvalidPointAmountError,
-                                         NotEnoughCoinError)
+from hashtablebot.bot_exceptions import (
+    ExceptionWithChatMessage,
+    InvalidPointAmountError,
+    NotEnoughCoinError,
+)
 from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
 from hashtablebot.memory_entity.point_amount import PointAmountConverter
