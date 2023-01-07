@@ -70,7 +70,7 @@ class Translator:
         # Dictionary mapping (channel_name, user_id) to TranslatedUser object
         self._translated_users: dict[tuple[str, int], TranslatedUser] = dict()
 
-    async def translate(self, ctx, args) -> str:
+    async def translate(self, ctx, args: tuple[str, ...]) -> str:
         """
         Receives arguments passed to the translate command, validates the type
         and calls the appropriate method according to the TranslationType
@@ -78,11 +78,10 @@ class Translator:
         :param args: arguments passed to the translate command
         :return: string with the answer(error or translation)
         """
-        args: tuple[str, ...]
 
         try:
-            translation_type, *other_args = args
-            translation_type: TranslationType = TranslationType[translation_type]
+            type_str, *other_args = args
+            translation_type: TranslationType = TranslationType[type_str]
         except (KeyError, ValueError) as e:
             return (
                 f"invalid translation type. Accepted values: {TranslationType.types()}"
