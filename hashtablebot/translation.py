@@ -62,7 +62,7 @@ def translate_text(
     if not text:
         raise TranslatorError
 
-    return tss.google(text, source_lang, target_lang)
+    return tss.server.google(text, source_lang, target_lang)
 
 
 class Translator:
