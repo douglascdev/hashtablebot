@@ -504,11 +504,13 @@ class HashTableBot(Bot):
             await ctx.reply(e.get_chat_message())
             return
 
+        duel_target_bot_user: BotUser
+
         try:
-            duel_target_bot_user: BotUser = BotUserDao.get_by_id(duel_target.id)
+            duel_target_bot_user = BotUserDao.get_by_id(duel_target.id)
         except NoResultFound:
             # If the target user doesn't exist, we should create it
-            duel_target_bot_user: BotUser = BotUser(id=duel_target.id)
+            duel_target_bot_user = BotUser(id=duel_target.id)
 
         for bot_user, name in (duel_target_bot_user, duel_target.name), (
             author_bot_user,
