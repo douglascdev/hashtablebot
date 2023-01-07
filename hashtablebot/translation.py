@@ -66,7 +66,7 @@ def translate_text(
 
 
 class Translator:
-    def __init__(self):
+    def __init__(self) -> None:
         # Dictionary mapping (channel_name, user_id) to TranslatedUser object
         self._translated_users: dict[tuple[str, int], TranslatedUser] = dict()
 
