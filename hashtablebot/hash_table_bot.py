@@ -54,12 +54,11 @@ class HashTableBot(Bot):
         self._translator = Translator()
         self._duel_wait_until_go_in_seconds = 6
         self._duel_timeout_in_seconds = 2
-        self._channel_id_to_prefix: dict[int, str] = dict()
 
     async def _get_bot_prefix(self, _: Bot, message: Message):
         try:
             channel_id = (await message.channel.user()).id
-            return self._channel_id_to_prefix[channel_id]
+            return BotUserDao.get_by_id(channel_id).bot_command_prefix
         except Exception as e:
             logging.exception(e)
             return "$"
@@ -72,11 +71,6 @@ class HashTableBot(Bot):
         logging.info(f"User id is {self.user_id}")
 
         joined_channel_bot_users = BotUserDao.get_all_joined_channels()
-
-        for channel_bot_user in joined_channel_bot_users:
-            self._channel_id_to_prefix[
-                int(channel_bot_user.id)
-            ] = channel_bot_user.bot_command_prefix
 
         joined_channel_ttv_users = await self.fetch_users(
             ids=[bot_user.id for bot_user in joined_channel_bot_users]
@@ -198,7 +192,6 @@ class HashTableBot(Bot):
 
         author.bot_joined_channel = True
         BotUserDao.update(author)
-        self._channel_id_to_prefix[author.id] = author.bot_command_prefix
 
         await self.join_channels((ctx.author.name,))
         await ctx.reply(f"joined channel '{ctx.author.name}'")
@@ -229,7 +222,6 @@ class HashTableBot(Bot):
         except NoResultFound:
             channel_bot_user: BotUser = BotUser(id=int(ctx.author.id))
 
-        self._channel_id_to_prefix[channel_bot_user.id] = prefix
         channel_bot_user.bot_command_prefix = prefix
         BotUserDao.update(channel_bot_user)
 
