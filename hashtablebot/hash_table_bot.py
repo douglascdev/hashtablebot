@@ -184,10 +184,12 @@ class HashTableBot(Bot):
         """
         Join message author's channel. The joined status is persisted.
         """
+        author: BotUser
+
         try:
-            author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
+            author = BotUserDao.get_by_id(int(ctx.author.id))
         except NoResultFound:
-            author: BotUser = BotUser(id=int(ctx.author.id))
+            author = BotUser(id=int(ctx.author.id))
 
         if author.bot_joined_channel:
             await ctx.reply("already joined channel.")
