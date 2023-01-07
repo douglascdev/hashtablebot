@@ -267,7 +267,7 @@ class HashTableBot(Bot):
         """
         Gamble the specified amount of coins with a 50% chance of winning.
         :param ctx:
-        :param amount: amount of coins to bet
+        :param amount_str: amount of coins to bet
         :return:
         """
         try:
