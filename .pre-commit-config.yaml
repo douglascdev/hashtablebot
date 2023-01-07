@@ -1,5 +1,12 @@
 repos:
-    
+
+-   repo: https://github.com/pycqa/isort
+    rev: 5.11.4
+    hooks:
+    - id: isort
+      name: isort (python)
+      args: [ "--profile", "black", "--filter-files" ]
+
 -   repo: https://github.com/psf/black
     rev: 22.12.0
     hooks:
@@ -9,13 +16,8 @@ repos:
     rev: "v0.991"
     hooks:
     -   id: mypy
-        args: [--no-strict-optional, --ignore-missing-imports]
-
--   repo: https://github.com/pycqa/isort
-    rev: 5.11.4
-    hooks:
-      - id: isort
-        name: isort (python)
+        entry: bash -c 'mypy --no-strict-optional --ignore-missing-imports -p hashtablebot'
+        verbose: true
 
 -   repo: local
     hooks:

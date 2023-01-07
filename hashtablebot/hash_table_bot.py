@@ -12,9 +12,11 @@ from twitchio.ext.commands import BadArgument, Bot, MissingRequiredArgument
 
 from hashtablebot.banking.bank import Bank
 from hashtablebot.banking.commands import Batch, Deposit, Withdrawal
-from hashtablebot.bot_exceptions import (ExceptionWithChatMessage,
-                                         InvalidPointAmountError,
-                                         NotEnoughCoinError)
+from hashtablebot.bot_exceptions import (
+    ExceptionWithChatMessage,
+    InvalidPointAmountError,
+    NotEnoughCoinError,
+)
 from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
 from hashtablebot.memory_entity.point_amount import PointAmountConverter
@@ -182,10 +184,12 @@ class HashTableBot(Bot):
         """
         Join message author's channel. The joined status is persisted.
         """
+        author: BotUser
+
         try:
-            author: BotUser = BotUserDao.get_by_id(int(ctx.author.id))
+            author = BotUserDao.get_by_id(int(ctx.author.id))
         except NoResultFound:
-            author: BotUser = BotUser(id=int(ctx.author.id))
+            author = BotUser(id=int(ctx.author.id))
 
         if author.bot_joined_channel:
             await ctx.reply("already joined channel.")
@@ -218,10 +222,12 @@ class HashTableBot(Bot):
             await ctx.reply("could not fetch channel user.")
             return
 
+        channel_bot_user: BotUser
+
         try:
-            channel_bot_user: BotUser = BotUserDao.get_by_id(int(channel_ttv_user.id))
+            channel_bot_user = BotUserDao.get_by_id(int(channel_ttv_user.id))
         except NoResultFound:
-            channel_bot_user: BotUser = BotUser(id=int(ctx.author.id))
+            channel_bot_user = BotUser(id=int(ctx.author.id))
 
         channel_bot_user.bot_command_prefix = prefix
         BotUserDao.update(channel_bot_user)
@@ -257,11 +263,11 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command(aliases=["gamba"])
-    async def gamble(self, ctx: commands.Context, amount: str):
+    async def gamble(self, ctx: commands.Context, amount_str: str):
         """
         Gamble the specified amount of coins with a 50% chance of winning.
         :param ctx:
-        :param amount: amount of coins to bet
+        :param amount_str: amount of coins to bet
         :return:
         """
         try:
@@ -274,7 +280,7 @@ class HashTableBot(Bot):
             return
 
         try:
-            amount = PointAmountConverter.convert(amount, author)
+            amount = PointAmountConverter.convert(amount_str, author)
         except InvalidPointAmountError as e:
             await ctx.reply(e.get_chat_message())
             logging.exception(e)
@@ -344,11 +350,13 @@ class HashTableBot(Bot):
             await ctx.reply("you're not a moderator...")
             return
 
+        target_bot_user: BotUser
+
         try:
-            target_bot_user: BotUser = BotUserDao.get_by_id(target_user.id)
+            target_bot_user = BotUserDao.get_by_id(target_user.id)
         except NoResultFound:
             # If the target user doesn't exist, we should create it
-            target_bot_user: BotUser = BotUser(id=target_user.id)
+            target_bot_user = BotUser(id=target_user.id)
 
         target_bot_user.balance = amount
 
@@ -380,12 +388,12 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command()
-    async def give(self, ctx: commands.Context, target_user: User, amount: str):
+    async def give(self, ctx: commands.Context, target_user: User, amount_str: str):
         """
         Give the amount of coins to the target user
         :param ctx:
         :param target_user:
-        :param amount:
+        :param amount_str:
         :return:
         """
         author_id = ctx.message.author.id
@@ -400,17 +408,19 @@ class HashTableBot(Bot):
             return
 
         try:
-            amount = PointAmountConverter.convert(amount, author_bot_user)
+            amount = PointAmountConverter.convert(amount_str, author_bot_user)
         except InvalidPointAmountError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
             return
 
+        target_bot_user: BotUser
+
         try:
-            target_bot_user: BotUser = BotUserDao.get_by_id(target_user.id)
+            target_bot_user = BotUserDao.get_by_id(target_user.id)
         except NoResultFound:
             # If the target user doesn't exist, we should create it
-            target_bot_user: BotUser = BotUser(id=target_user.id)
+            target_bot_user = BotUser(id=target_user.id)
 
         Bank().execute(
             Batch(
@@ -468,12 +478,12 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command()
-    async def duel(self, ctx: commands.Context, duel_target: User, amount: str):
+    async def duel(self, ctx: commands.Context, duel_target: User, amount_str: str):
         """
         Duel with target user on rock, paper scissors
         :param ctx:
         :param duel_target:
-        :param amount:
+        :param amount_str:
         :return:
         """
         author_id = ctx.message.author.id
@@ -488,17 +498,19 @@ class HashTableBot(Bot):
             return
 
         try:
-            amount = PointAmountConverter.convert(amount, author_bot_user)
+            amount = PointAmountConverter.convert(amount_str, author_bot_user)
         except InvalidPointAmountError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
             return
 
+        duel_target_bot_user: BotUser
+
         try:
-            duel_target_bot_user: BotUser = BotUserDao.get_by_id(duel_target.id)
+            duel_target_bot_user = BotUserDao.get_by_id(duel_target.id)
         except NoResultFound:
             # If the target user doesn't exist, we should create it
-            duel_target_bot_user: BotUser = BotUser(id=duel_target.id)
+            duel_target_bot_user = BotUser(id=duel_target.id)
 
         for bot_user, name in (duel_target_bot_user, duel_target.name), (
             author_bot_user,
