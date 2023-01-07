@@ -478,12 +478,12 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command()
-    async def duel(self, ctx: commands.Context, duel_target: User, amount: str):
+    async def duel(self, ctx: commands.Context, duel_target: User, amount_str: str):
         """
         Duel with target user on rock, paper scissors
         :param ctx:
         :param duel_target:
-        :param amount:
+        :param amount_str:
         :return:
         """
         author_id = ctx.message.author.id
@@ -498,7 +498,7 @@ class HashTableBot(Bot):
             return
 
         try:
-            amount = PointAmountConverter.convert(amount, author_bot_user)
+            amount = PointAmountConverter.convert(amount_str, author_bot_user)
         except InvalidPointAmountError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
