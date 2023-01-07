@@ -6,23 +6,21 @@ from asyncio import CancelledError
 from datetime import datetime, timedelta
 
 from sqlalchemy.exc import NoResultFound
-from twitchio import User, Message, Channel
+from twitchio import Channel, Message, User
 from twitchio.ext import commands
-from twitchio.ext.commands import Bot, MissingRequiredArgument, BadArgument
+from twitchio.ext.commands import BadArgument, Bot, MissingRequiredArgument
 
 from hashtablebot.banking.bank import Bank
-from hashtablebot.banking.commands import Deposit, Withdrawal, Batch
-from hashtablebot.bot_exceptions import (
-    NotEnoughCoinError,
-    InvalidPointAmountError,
-    ExceptionWithChatMessage,
-)
+from hashtablebot.banking.commands import Batch, Deposit, Withdrawal
+from hashtablebot.bot_exceptions import (ExceptionWithChatMessage,
+                                         InvalidPointAmountError,
+                                         NotEnoughCoinError)
 from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
 from hashtablebot.memory_entity.point_amount import PointAmountConverter
 from hashtablebot.persistence.bot_user_dao import BotUserDao
 from hashtablebot.translation import Translator
-from hashtablebot.user_checks import is_bot_admin_or_mod, is_bot_admin
+from hashtablebot.user_checks import is_bot_admin, is_bot_admin_or_mod
 
 
 class HashTableBot(Bot):
@@ -84,7 +82,9 @@ class HashTableBot(Bot):
         if channels_without_db_entry:
             new_channels = [
                 BotUser(id=user.id, bot_joined_channel=True)
-                for user in await self.fetch_users(names=list(channels_without_db_entry))
+                for user in await self.fetch_users(
+                    names=list(channels_without_db_entry)
+                )
             ]
             logging.info(
                 f"Added bot entries for initial channels: {', '.join(channels_without_db_entry)}"

@@ -1,6 +1,6 @@
 import dataclasses
 
-from sqlalchemy import Column, Integer, Boolean, String, Table
+from sqlalchemy import Boolean, Column, Integer, String, Table
 from sqlalchemy.orm import registry
 
 from hashtablebot.bot_exceptions import NotEnoughCoinError

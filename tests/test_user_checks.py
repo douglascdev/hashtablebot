@@ -1,6 +1,5 @@
 from unittest import TestCase
-from unittest.mock import patch, PropertyMock
-
+from unittest.mock import PropertyMock, patch
 
 from hashtablebot import user_checks
 
