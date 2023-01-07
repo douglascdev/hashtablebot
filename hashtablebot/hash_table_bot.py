@@ -222,10 +222,12 @@ class HashTableBot(Bot):
             await ctx.reply("could not fetch channel user.")
             return
 
+        channel_bot_user: BotUser
+
         try:
-            channel_bot_user: BotUser = BotUserDao.get_by_id(int(channel_ttv_user.id))
+            channel_bot_user = BotUserDao.get_by_id(int(channel_ttv_user.id))
         except NoResultFound:
-            channel_bot_user: BotUser = BotUser(id=int(ctx.author.id))
+            channel_bot_user = BotUser(id=int(ctx.author.id))
 
         channel_bot_user.bot_command_prefix = prefix
         BotUserDao.update(channel_bot_user)
