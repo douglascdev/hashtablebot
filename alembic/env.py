@@ -17,7 +17,10 @@ _db_password = getenv("POSTGRES_PASSWORD")
 _db_name = getenv("POSTGRES_DB")
 _db_host = getenv("POSTGRES_HOST")
 
-config.set_main_option("sqlalchemy.url", f"postgresql+psycopg2://{_db_user}:{_db_password}@{_db_host}/{_db_name}")
+config.set_main_option(
+    "sqlalchemy.url",
+    f"postgresql+psycopg2://{_db_user}:{_db_password}@{_db_host}/{_db_name}",
+)
 
 
 # Interpret the config file for Python logging.
@@ -75,9 +78,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

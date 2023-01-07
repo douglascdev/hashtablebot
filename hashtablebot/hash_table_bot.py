@@ -646,9 +646,15 @@ class HashTableBot(Bot):
     @commands.command()
     async def ping(self, ctx: commands.Context):
         uptime: timedelta = datetime.now() - self._startup_time
-        days, hours, minutes = uptime.days, uptime.seconds//3600, (uptime.seconds//60) % 60
+        days, hours, minutes = (
+            uptime.days,
+            uptime.seconds // 3600,
+            (uptime.seconds // 60) % 60,
+        )
         n_channels = len(self.connected_channels)
-        await ctx.reply(f"Pong! Uptime: {days}d{hours}h{minutes}m  | Channels: {n_channels}")
+        await ctx.reply(
+            f"Pong! Uptime: {days}d{hours}h{minutes}m  | Channels: {n_channels}"
+        )
 
     @commands.command()
     async def shutdown(self, ctx: commands.Context):
