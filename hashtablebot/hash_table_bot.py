@@ -82,7 +82,21 @@ class HashTableBot(Bot):
             ids=[bot_user.id for bot_user in joined_channel_bot_users]
         )
 
-        # Use a set to remove any duplicates
+        # Create database entries for channels without an existing one
+        channels_without_db_entry = set(self._initial_channels).difference(
+            [channel.name for channel in joined_channel_ttv_users]
+        )
+        if channels_without_db_entry:
+            new_channels = [
+                BotUser(id=user.id, bot_joined_channel=True)
+                for user in await self.fetch_users(names=list(channels_without_db_entry))
+            ]
+            logging.info(
+                f"Added bot entries for initial channels: {', '.join(channels_without_db_entry)}"
+            )
+            BotUserDao.save(*new_channels)
+
+        # Use a set to remove any duplicate names
         names = {ttv_user.name for ttv_user in joined_channel_ttv_users}
         names = names.union(self._initial_channels)
 
