@@ -263,7 +263,7 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command(aliases=["gamba"])
-    async def gamble(self, ctx: commands.Context, amount: str):
+    async def gamble(self, ctx: commands.Context, amount_str: str):
         """
         Gamble the specified amount of coins with a 50% chance of winning.
         :param ctx:
@@ -280,7 +280,7 @@ class HashTableBot(Bot):
             return
 
         try:
-            amount = PointAmountConverter.convert(amount, author)
+            amount = PointAmountConverter.convert(amount_str, author)
         except InvalidPointAmountError as e:
             await ctx.reply(e.get_chat_message())
             logging.exception(e)
