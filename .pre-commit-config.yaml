@@ -16,7 +16,8 @@ repos:
     rev: "v0.991"
     hooks:
     -   id: mypy
-        args: [--no-strict-optional, --ignore-missing-imports]
+        entry: bash -c 'mypy --no-strict-optional --ignore-missing-imports -p hashtablebot'
+        verbose: true
 
 -   repo: local
     hooks:
