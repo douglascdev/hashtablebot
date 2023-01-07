@@ -55,7 +55,8 @@ class HashTableBot(Bot):
         self._duel_wait_until_go_in_seconds = 6
         self._duel_timeout_in_seconds = 2
 
-    async def _get_bot_prefix(self, _: Bot, message: Message):
+    @staticmethod
+    async def _get_bot_prefix(_: Bot, message: Message):
         try:
             channel_id = (await message.channel.user()).id
             return BotUserDao.get_by_id(channel_id).bot_command_prefix
