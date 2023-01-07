@@ -388,12 +388,12 @@ class HashTableBot(Bot):
         bucket=commands.Bucket.channel,
     )
     @commands.command()
-    async def give(self, ctx: commands.Context, target_user: User, amount: str):
+    async def give(self, ctx: commands.Context, target_user: User, amount_str: str):
         """
         Give the amount of coins to the target user
         :param ctx:
         :param target_user:
-        :param amount:
+        :param amount_str:
         :return:
         """
         author_id = ctx.message.author.id
@@ -408,7 +408,7 @@ class HashTableBot(Bot):
             return
 
         try:
-            amount = PointAmountConverter.convert(amount, author_bot_user)
+            amount = PointAmountConverter.convert(amount_str, author_bot_user)
         except InvalidPointAmountError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
