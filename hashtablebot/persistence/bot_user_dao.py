@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from sqlalchemy import select, desc
+from sqlalchemy import desc, select
 
 from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.persistence.dao import Dao

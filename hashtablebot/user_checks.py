@@ -1,6 +1,5 @@
 from twitchio import Chatter, PartialChatter
 
-
 # TODO: find a better way to do this, maybe a boolean attribute in BotUser
 _admins = {"hash_table"}
 

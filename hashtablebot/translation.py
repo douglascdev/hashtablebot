@@ -4,7 +4,7 @@ from enum import StrEnum, auto
 
 import translators as tss
 from translators.server import TranslatorError
-from twitchio import User, Channel, Message
+from twitchio import Channel, Message, User
 
 DEFAULT_SOURCE_LANG = "auto"
 DEFAULT_TARGET_LANG = "en"
