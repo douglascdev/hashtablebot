@@ -81,6 +81,8 @@ class HashTableBot(Bot):
         joined_channel_ttv_users = await self.fetch_users(
             ids=[bot_user.id for bot_user in joined_channel_bot_users]
         )
+
+        # Use a set to remove any duplicates
         names = {ttv_user.name for ttv_user in joined_channel_ttv_users}
         names = names.union(self._initial_channels)
 
