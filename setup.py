@@ -28,6 +28,11 @@ setup(
         "dev": [
             "sphinx",
             "sphinx_rtd_theme",
+            "black",
+            "isort",
+            "mypy",
+            "coverage",
+            "pre-commit",
         ]
     },
 )
