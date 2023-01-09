@@ -1,0 +1,19 @@
+name: API workflow
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Test coverage
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install requirements
+      run: pip install -e .[dev]
+    - name: Run tests and collect coverage
+      run: coverage run --source hashtablebot -m unittest discover
+    - name: Upload coverage reports to Codecov
+      run: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
+        ./codecov -t ${CODECOV_TOKEN}
