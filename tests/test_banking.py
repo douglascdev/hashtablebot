@@ -1,10 +1,9 @@
-import dataclasses
 from unittest import TestCase
 
 from hashtablebot.banking.bank import Bank
 from hashtablebot.banking.bank_user import BankUser
 from hashtablebot.banking.commands import Batch, Deposit, Transfer, Withdrawal
-from hashtablebot.bot_exceptions import NotEnoughCoinError
+from tests.bank_user_test import BankUserTest
 
 
 class TestBanking(TestCase):
@@ -12,31 +11,8 @@ class TestBanking(TestCase):
     Tests for Banking module
     """
 
-    @dataclasses.dataclass
-    class TestBankUser:
-        """
-        Test implementation of BankUser Protocol
-        """
-
-        balance: int
-
-        def deposit(self, amount: int):
-            self.balance += amount
-
-        def withdraw(self, amount: int):
-            if amount > self.balance:
-                raise NotEnoughCoinError("Not enough funds")
-
-            self.balance -= amount
-
-        def name(self) -> str:
-            return "Name"
-
-        def get_balance(self) -> int:
-            return self.balance
-
     def setUp(self) -> None:
-        self.bank_user: BankUser = self.TestBankUser(balance=100)
+        self.bank_user: BankUser = BankUserTest(balance=100)
 
     def test_deposit_batch(self):
         Bank().execute(
@@ -105,7 +81,7 @@ class TestBanking(TestCase):
         self.assertEqual(self.bank_user.get_balance(), 100)
 
     def test_transfer(self):
-        transfer_target: BankUser = self.TestBankUser(balance=100)
+        transfer_target: BankUser = BankUserTest(balance=100)
 
         bank = Bank()
 
