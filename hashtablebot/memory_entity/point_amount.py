@@ -1,5 +1,5 @@
+from hashtablebot.banking.bank_user import BankUser
 from hashtablebot.bot_exceptions import InvalidPointAmountError
-from hashtablebot.entity.bot_user import BotUser
 
 
 class PointAmountConverter:
@@ -11,19 +11,19 @@ class PointAmountConverter:
     """
 
     @staticmethod
-    def convert(amount: str, bot_user: BotUser) -> int:
+    def convert(amount: str, bank_user: BankUser) -> int:
         """
         Convert an amount of points from any format to an integer value.
-        :param bot_user:
+        :param bank_user:
         :param amount: string with a percentage, number or word describing an amount
         :raises: InvalidPointAmountError
         """
         if amount.isnumeric():
             return PointAmountConverter._convert_from_num(amount)
         elif amount.endswith("%"):
-            return PointAmountConverter._convert_from_percentage(amount, bot_user)
+            return PointAmountConverter._convert_from_percentage(amount, bank_user)
         else:
-            return PointAmountConverter._convert_from_keyword(amount, bot_user)
+            return PointAmountConverter._convert_from_keyword(amount, bank_user)
 
     @staticmethod
     def _convert_from_num(amount: str) -> int:
@@ -35,23 +35,23 @@ class PointAmountConverter:
             return int_amount
 
     @staticmethod
-    def _convert_from_percentage(amount: str, bot_user: BotUser) -> int:
+    def _convert_from_percentage(amount: str, bank_user: BankUser) -> int:
         try:
             int_percentage = int(amount[:-1])
         except ValueError:
             raise InvalidPointAmountError("An invalid percentage was passed!")
         else:
-            if not bot_user:
+            if not bank_user:
                 raise InvalidPointAmountError("Not a valid user!")
 
-            return (bot_user.balance * int_percentage) // 100
+            return (bank_user.get_balance() * int_percentage) // 100
 
     @staticmethod
-    def _convert_from_keyword(amount: str, bot_user: BotUser) -> int:
+    def _convert_from_keyword(amount: str, bank_user: BankUser) -> int:
         match amount:
             case "all":
-                return bot_user.balance
+                return bank_user.get_balance()
             case "half":
-                return bot_user.balance // 2
+                return bank_user.get_balance() // 2
             case _:
                 raise InvalidPointAmountError("Not a valid amount")
