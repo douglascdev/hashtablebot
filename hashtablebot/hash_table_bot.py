@@ -137,13 +137,6 @@ class HashTableBot(Bot):
             and not message.content.startswith(await self._prefix(self, message))
         )
         if message_is_not_command:
-            # Distribute point reward for chatting
-            try:
-                Bank().reward_chatter(message.author, self._chatting_message_reward)
-
-            except Exception as e:
-                logging.exception(e)
-
             await self._translator.translate_user_message(message)
 
         elif not invoked_no_prefix_command:

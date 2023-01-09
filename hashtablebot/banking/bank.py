@@ -39,20 +39,3 @@ class Bank:
         transaction = self.redo_stack.pop()
         transaction.execute()
         self.undo_stack.append(transaction)
-
-    def reward_chatter(self, chatter: Chatter, reward: int):
-        if reward <= 0 or not is_chatter(chatter):
-            return
-
-        author_id = int(chatter.id)
-
-        try:
-            author_bot_user: BotUser = BotUserDao.get_by_id(author_id)
-        except NoResultFound:
-            # TODO: I guess this breaks single responsibility principle...? Should probably refactor it
-            author_bot_user = BotUser(id=author_id)
-
-        self.execute(Deposit(bot_user=author_bot_user, amount=reward))
-
-        # TODO: should probably remove this too, saving should not happen here
-        BotUserDao.save(author_bot_user)
