@@ -281,10 +281,10 @@ class HashTableBot(Bot):
 
         try:
             if random.randint(0, 1):
-                Bank().execute(Deposit(bot_user=author, amount=amount))
+                Bank().execute(Deposit(bank_user=author, amount=amount))
                 message = f"{ctx.author.name} won {amount} coins elisCoin !!! POGGERS They now have {author.balance}"
             else:
-                Bank().execute(Withdrawal(bot_user=author, amount=amount))
+                Bank().execute(Withdrawal(bank_user=author, amount=amount))
                 message = f"{ctx.author.name} lost {amount} coins...  peepoSad They now have {author.balance}"
 
         except ExceptionWithChatMessage as e:
@@ -418,8 +418,8 @@ class HashTableBot(Bot):
         Bank().execute(
             Batch(
                 [
-                    Withdrawal(bot_user=author_bot_user, amount=amount),
-                    Deposit(bot_user=target_bot_user, amount=amount),
+                    Withdrawal(bank_user=author_bot_user, amount=amount),
+                    Deposit(bank_user=target_bot_user, amount=amount),
                 ]
             )
         )
@@ -576,8 +576,8 @@ class HashTableBot(Bot):
             Bank().execute(
                 Batch(
                     [
-                        Deposit(bot_user=author_bot_user, amount=amount),
-                        Withdrawal(bot_user=duel_target_bot_user, amount=amount),
+                        Deposit(bank_user=author_bot_user, amount=amount),
+                        Withdrawal(bank_user=duel_target_bot_user, amount=amount),
                     ]
                 )
             )
@@ -589,8 +589,8 @@ class HashTableBot(Bot):
             Bank().execute(
                 Batch(
                     [
-                        Withdrawal(bot_user=author_bot_user, amount=amount),
-                        Deposit(bot_user=duel_target_bot_user, amount=amount),
+                        Withdrawal(bank_user=author_bot_user, amount=amount),
+                        Deposit(bank_user=duel_target_bot_user, amount=amount),
                     ]
                 )
             )
