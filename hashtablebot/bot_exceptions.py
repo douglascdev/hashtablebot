@@ -17,7 +17,7 @@ class NotEnoughCoinError(ExceptionWithChatMessage):
         return "You don't have enough elis coins elisLookingAtYou"
 
 
-class InvalidPointAmountError(ExceptionWithChatMessage):
+class PointConversionError(ExceptionWithChatMessage):
     @staticmethod
     def get_chat_message() -> str:
         return "An invalid point amount was passed elisLookingAtYou"

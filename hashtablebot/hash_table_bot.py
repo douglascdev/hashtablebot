@@ -14,8 +14,8 @@ from hashtablebot.banking.bank import Bank
 from hashtablebot.banking.commands import Batch, Deposit, Withdrawal
 from hashtablebot.bot_exceptions import (
     ExceptionWithChatMessage,
-    InvalidPointAmountError,
     NotEnoughCoinError,
+    PointConversionError,
 )
 from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
@@ -274,7 +274,7 @@ class HashTableBot(Bot):
 
         try:
             amount = PointAmountConverter.convert(amount_str, author)
-        except InvalidPointAmountError as e:
+        except PointConversionError as e:
             await ctx.reply(e.get_chat_message())
             logging.exception(e)
             return
@@ -402,7 +402,7 @@ class HashTableBot(Bot):
 
         try:
             amount = PointAmountConverter.convert(amount_str, author_bot_user)
-        except InvalidPointAmountError as e:
+        except PointConversionError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
             return
@@ -492,7 +492,7 @@ class HashTableBot(Bot):
 
         try:
             amount = PointAmountConverter.convert(amount_str, author_bot_user)
-        except InvalidPointAmountError as e:
+        except PointConversionError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
             return
