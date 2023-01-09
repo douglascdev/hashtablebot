@@ -10,3 +10,6 @@ class BankUser(Protocol):
 
     def name(self) -> str:
         ...
+
+    def get_balance(self) -> int:
+        ...
