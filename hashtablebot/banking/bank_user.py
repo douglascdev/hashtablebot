@@ -7,3 +7,6 @@ class BankUser(Protocol):
 
     def deposit(self, amount: int):
         ...
+
+    def name(self) -> str:
+        ...
