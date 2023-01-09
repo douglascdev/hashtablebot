@@ -1,6 +1,9 @@
 Hash Table Bot
 ==============
 
+.. image:: https://img.shields.io/pypi/pyversions/hashtablebot
+   :alt: PyPI - Python Version
+
 .. image:: https://codecov.io/gh/douglascdev/hashtablebot/branch/main/graph/badge.svg?token=8P7U85055I
  :target: https://codecov.io/gh/douglascdev/hashtablebot
 
