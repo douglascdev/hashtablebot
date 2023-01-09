@@ -8,7 +8,6 @@ Hash Table Bot
    :target: https://github.com/psf/black
 
 .. image:: https://img.shields.io/pypi/pyversions/hashtablebot
-   :alt: PyPI - Python Version
 
 Hash Table Bot is an open-source twitch bot made in Python.
 
