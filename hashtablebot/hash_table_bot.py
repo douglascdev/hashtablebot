@@ -14,8 +14,8 @@ from hashtablebot.banking.bank import Bank
 from hashtablebot.banking.commands import Batch, Deposit, Withdrawal
 from hashtablebot.bot_exceptions import (
     ExceptionWithChatMessage,
-    InvalidPointAmountError,
     NotEnoughCoinError,
+    PointConversionError,
 )
 from hashtablebot.entity.bot_user import BotUser
 from hashtablebot.memory_entity.no_prefix_command import DefaultNoPrefix
@@ -137,13 +137,6 @@ class HashTableBot(Bot):
             and not message.content.startswith(await self._prefix(self, message))
         )
         if message_is_not_command:
-            # Distribute point reward for chatting
-            try:
-                Bank().reward_chatter(message.author, self._chatting_message_reward)
-
-            except Exception as e:
-                logging.exception(e)
-
             await self._translator.translate_user_message(message)
 
         elif not invoked_no_prefix_command:
@@ -281,17 +274,17 @@ class HashTableBot(Bot):
 
         try:
             amount = PointAmountConverter.convert(amount_str, author)
-        except InvalidPointAmountError as e:
+        except PointConversionError as e:
             await ctx.reply(e.get_chat_message())
             logging.exception(e)
             return
 
         try:
             if random.randint(0, 1):
-                Bank().execute(Deposit(bot_user=author, amount=amount))
+                Bank().execute(Deposit(bank_user=author, amount=amount))
                 message = f"{ctx.author.name} won {amount} coins elisCoin !!! POGGERS They now have {author.balance}"
             else:
-                Bank().execute(Withdrawal(bot_user=author, amount=amount))
+                Bank().execute(Withdrawal(bank_user=author, amount=amount))
                 message = f"{ctx.author.name} lost {amount} coins...  peepoSad They now have {author.balance}"
 
         except ExceptionWithChatMessage as e:
@@ -409,7 +402,7 @@ class HashTableBot(Bot):
 
         try:
             amount = PointAmountConverter.convert(amount_str, author_bot_user)
-        except InvalidPointAmountError as e:
+        except PointConversionError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
             return
@@ -425,8 +418,8 @@ class HashTableBot(Bot):
         Bank().execute(
             Batch(
                 [
-                    Withdrawal(bot_user=author_bot_user, amount=amount),
-                    Deposit(bot_user=target_bot_user, amount=amount),
+                    Withdrawal(bank_user=author_bot_user, amount=amount),
+                    Deposit(bank_user=target_bot_user, amount=amount),
                 ]
             )
         )
@@ -499,7 +492,7 @@ class HashTableBot(Bot):
 
         try:
             amount = PointAmountConverter.convert(amount_str, author_bot_user)
-        except InvalidPointAmountError as e:
+        except PointConversionError as e:
             logging.exception(e)
             await ctx.reply(e.get_chat_message())
             return
@@ -583,8 +576,8 @@ class HashTableBot(Bot):
             Bank().execute(
                 Batch(
                     [
-                        Deposit(bot_user=author_bot_user, amount=amount),
-                        Withdrawal(bot_user=duel_target_bot_user, amount=amount),
+                        Deposit(bank_user=author_bot_user, amount=amount),
+                        Withdrawal(bank_user=duel_target_bot_user, amount=amount),
                     ]
                 )
             )
@@ -596,8 +589,8 @@ class HashTableBot(Bot):
             Bank().execute(
                 Batch(
                     [
-                        Withdrawal(bot_user=author_bot_user, amount=amount),
-                        Deposit(bot_user=duel_target_bot_user, amount=amount),
+                        Withdrawal(bank_user=author_bot_user, amount=amount),
+                        Deposit(bank_user=duel_target_bot_user, amount=amount),
                     ]
                 )
             )

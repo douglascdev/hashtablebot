@@ -130,7 +130,7 @@ class Translator:
             logging.debug(
                 f"Translating '{message.content}' from '{user.source_lang}' to '{user.target_lang}'"
             )
-            translated_msg = tss.google(
+            translated_msg = tss.server.google(
                 message.content, user.source_lang, user.target_lang
             )
         except Exception as e:

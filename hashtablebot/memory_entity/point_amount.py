@@ -1,5 +1,5 @@
-from hashtablebot.bot_exceptions import InvalidPointAmountError
-from hashtablebot.entity.bot_user import BotUser
+from hashtablebot.banking.bank_user import BankUser
+from hashtablebot.bot_exceptions import PointConversionError
 
 
 class PointAmountConverter:
@@ -11,47 +11,56 @@ class PointAmountConverter:
     """
 
     @staticmethod
-    def convert(amount: str, bot_user: BotUser) -> int:
+    def convert(amount: str, bank_user: BankUser) -> int:
         """
         Convert an amount of points from any format to an integer value.
-        :param bot_user:
+        :param bank_user:
         :param amount: string with a percentage, number or word describing an amount
-        :raises: InvalidPointAmountError
+        :raises: PointConversionError if one of these conditions is met:
+            - the amount passed is invalid
+            - bank_user is not passed for a numeric amount
+            - amount exceeds 20 digits
         """
+        if len(amount) > 20:
+            raise PointConversionError("Amount exceeds 20 digits!")
+
         if amount.isnumeric():
             return PointAmountConverter._convert_from_num(amount)
+
+        if not bank_user:
+            raise PointConversionError(
+                "Non-numeric amounts require a BankUser to be passed!"
+            )
+
         elif amount.endswith("%"):
-            return PointAmountConverter._convert_from_percentage(amount, bot_user)
+            return PointAmountConverter._convert_from_percentage(amount, bank_user)
         else:
-            return PointAmountConverter._convert_from_keyword(amount, bot_user)
+            return PointAmountConverter._convert_from_keyword(amount, bank_user)
 
     @staticmethod
     def _convert_from_num(amount: str) -> int:
         try:
             int_amount = int(amount)
         except ValueError:
-            raise InvalidPointAmountError("An invalid amount of points was passed!")
+            raise PointConversionError("An invalid amount of points was passed!")
         else:
             return int_amount
 
     @staticmethod
-    def _convert_from_percentage(amount: str, bot_user: BotUser) -> int:
+    def _convert_from_percentage(amount: str, bank_user: BankUser) -> int:
         try:
             int_percentage = int(amount[:-1])
         except ValueError:
-            raise InvalidPointAmountError("An invalid percentage was passed!")
+            raise PointConversionError("An invalid percentage was passed!")
         else:
-            if not bot_user:
-                raise InvalidPointAmountError("Not a valid user!")
-
-            return (bot_user.balance * int_percentage) // 100
+            return (bank_user.get_balance() * int_percentage) // 100
 
     @staticmethod
-    def _convert_from_keyword(amount: str, bot_user: BotUser) -> int:
+    def _convert_from_keyword(amount: str, bank_user: BankUser) -> int:
         match amount:
             case "all":
-                return bot_user.balance
+                return bank_user.get_balance()
             case "half":
-                return bot_user.balance // 2
+                return bank_user.get_balance() // 2
             case _:
-                raise InvalidPointAmountError("Not a valid amount")
+                raise PointConversionError("Not a valid amount")

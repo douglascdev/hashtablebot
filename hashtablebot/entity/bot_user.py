@@ -43,3 +43,10 @@ class BotUser:
             raise NotEnoughCoinError("Not enough funds")
 
         self.balance -= amount
+
+    def name(self) -> str:
+        # TODO: add name attribute to bot_user
+        return str(self.id)
+
+    def get_balance(self) -> int:
+        return self.balance
