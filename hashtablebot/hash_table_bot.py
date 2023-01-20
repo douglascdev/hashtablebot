@@ -25,7 +25,7 @@ from hashtablebot.translation import Translator
 from hashtablebot.user_checks import is_bot_admin, is_bot_admin_or_mod
 
 
-class HashTableBot(Bot):
+class HashTableBot:
     """
     The main bot class, inheriting from twitchio.ext.commands.Bot and adding all of HashTableBot's commands.
 
@@ -39,7 +39,7 @@ class HashTableBot(Bot):
     DEFAULT_COOLDOWN_TIME = 30
 
     def __init__(self, token, initial_channels):
-        super().__init__(token=token, prefix=self._get_bot_prefix)
+        self._bot = Bot(token=token, prefix=self._get_bot_prefix)
         self._no_prefix_commands = (
             DefaultNoPrefix("Robert", "NekoPray Robert"),
             DefaultNoPrefix("NekoPray Robert", "NekoPray Robert"),
