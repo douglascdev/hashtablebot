@@ -1,10 +1,11 @@
 """Add bot user table
 
 Revision ID: b793e74202bd
-Revises: 
+Revises:
 Create Date: 2022-12-17 17:41:34.916176
 
 """
+
 import sqlalchemy as sa
 
 from alembic import op
