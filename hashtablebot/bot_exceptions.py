@@ -1,6 +1,7 @@
 """
 Custom exceptions created for the bot
 """
+
 from abc import ABC, abstractmethod
 
 
